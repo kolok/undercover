@@ -1,0 +1,11 @@
+# Copier ce fichier en android/key.properties (non versionné) et renseigner la
+# clé de signature (« upload key ») utilisée pour publier sur Google Play.
+#
+# Création de la clé :
+#   keytool -genkey -v -keystore ~/keystores/undercover-upload.jks \
+#           -keyalg RSA -keysize 2048 -validity 10000 -alias upload
+#
+storeFile=/Users/moi/keystores/undercover-upload.jks
+storePassword=
+keyAlias=upload
+keyPassword=
