@@ -10,7 +10,9 @@ Tout ce qui est nécessaire à la fiche est dans ce dossier. Le bundle à envoye
 | `icon-512.png` | Icône de l'application (512×512) |
 | `feature-graphic.png` | Image de présentation (1024×500) |
 | `01-accueil.png` … `06-victoire.png` | Captures d'écran téléphone (1080×1920) |
-| `politique-de-confidentialite.html` | À héberger, puis coller l'URL dans la console |
+
+La politique de confidentialité est publiée par GitHub Pages depuis `docs/` :
+<https://kolok.github.io/undercover/>
 
 Régénérer ces visuels après un changement d'UI :
 
@@ -74,7 +76,7 @@ banque de mots hors ligne.
 
 ## Réponses aux questionnaires « Contenu de l'application »
 
-- **Politique de confidentialité** : l'URL de `politique-de-confidentialite.html` une fois hébergée.
+- **Politique de confidentialité** : <https://kolok.github.io/undercover/>
 - **Accès à l'application** : aucun identifiant requis, tout est accessible.
 - **Annonces** : l'application ne contient pas d'annonces.
 - **Classification du contenu** : catégorie *Jeu — Puzzle / Réflexion*, aucune
