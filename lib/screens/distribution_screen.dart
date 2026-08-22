@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../game/game_controller.dart';
 import '../models/player.dart';
 import '../theme.dart';
+import '../widgets/game_heading.dart';
 import '../widgets/player_card.dart';
 import '../widgets/quit_guard.dart';
 import 'player_name_screen.dart';
@@ -27,15 +28,20 @@ class _DistributionScreenState extends State<DistributionScreen> {
 
   Future<void> _pickCard(Player card) async {
     final navigator = Navigator.of(context);
-    final name = await navigator.push<String>(
-      MaterialPageRoute(
-        builder: (_) => PlayerNameScreen(
-          suggestedName: _game.suggestedName,
-          takenNames: _game.takenNames,
+    // Avec une équipe reprise de la partie précédente, l'application sait déjà
+    // qui joue : on saute la saisie du nom.
+    var name = _game.nextPlayerName;
+    if (name == null) {
+      name = await navigator.push<String>(
+        MaterialPageRoute(
+          builder: (_) => PlayerNameScreen(
+            suggestedName: _game.suggestedName,
+            takenNames: _game.takenNames,
+          ),
         ),
-      ),
-    );
-    if (name == null || !mounted) return;
+      );
+      if (name == null || !mounted) return;
+    }
 
     _game.claimCard(card.cardId, name);
     await navigator.push<void>(
@@ -66,23 +72,21 @@ class _DistributionScreenState extends State<DistributionScreen> {
               listenable: _game,
               builder: (context, _) {
                 final done = _game.isDistributionComplete;
+                final next = _game.nextPlayerName;
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
                     children: [
-                      Text(
-                        done
+                      GameHeading(
+                        instruction: done
                             ? 'Tout le monde a son mot !'
-                            : 'Au joueur suivant de choisir une carte',
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w700),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        '${_game.takenCardCount} / ${_game.settings.playerCount} cartes distribuées',
-                        style: const TextStyle(
-                            color: AppColors.muted, fontSize: 13),
+                            : next == null
+                                ? 'Au joueur suivant de choisir une carte'
+                                : 'Au tour de ${GameHeading.namePlaceholder} '
+                                    'de choisir une carte',
+                        highlight: next,
+                        subtitle:
+                            '${_game.takenCardCount} / ${_game.settings.playerCount} cartes distribuées',
                       ),
                       const SizedBox(height: 16),
                       Expanded(

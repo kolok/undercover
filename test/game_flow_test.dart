@@ -64,9 +64,24 @@ void main() {
     expect(find.text('FIN DE PARTIE'), findsOneWidget);
     expect(find.text('Mot des civils'), findsOneWidget);
 
+    // Rejouer conserve l'équipe : l'application appelle les joueurs elle-même.
     await tester.tap(find.text('Rejouer'));
     await tester.pumpAndSettle();
     expect(find.text('0 / 3 cartes distribuées'), findsOneWidget);
+    final first = ['Ana', 'Bob', 'Cleo'].firstWhere(
+      (name) => find.text('Au tour de $name de choisir une carte').evaluate().isNotEmpty,
+    );
+
+    // Choisir une carte n'ouvre plus la saisie du nom : il est déjà connu.
+    await tester.tap(find.text('Libre').first);
+    await tester.pumpAndSettle();
+    expect(find.text('TON NOM'), findsNothing);
+    expect(find.text(first.toUpperCase()), findsOneWidget);
+    await tester.tap(find.byType(GestureDetector).first);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('J\'ai vu, joueur suivant'));
+    await tester.pumpAndSettle();
+    expect(find.text('1 / 3 cartes distribuées'), findsOneWidget);
   });
 
   testWidgets('Mr White éliminé peut deviner le mot des civils',

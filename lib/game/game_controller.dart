@@ -71,15 +71,26 @@ class GameSettings {
 
 /// Contient l'état d'une partie et toutes les règles associées.
 class GameController extends ChangeNotifier {
-  GameController(this.settings, {Random? random, List<WordPair>? wordPairs})
-      : _random = random ?? Random(),
+  /// [roster] reprend les joueurs d'une partie précédente : l'ordre de passage
+  /// est conservé, seul le premier à choisir une carte est tiré au sort.
+  GameController(
+    this.settings, {
+    Random? random,
+    List<WordPair>? wordPairs,
+    List<String> roster = const [],
+  })  : _random = random ?? Random(),
         _wordPairs = wordPairs ?? kWordPairs {
     _deal();
+    _rotatedRoster = _rotate(roster);
   }
 
   final GameSettings settings;
   final Random _random;
   final List<WordPair> _wordPairs;
+
+  /// Noms imposés, dans l'ordre où l'application appelle les joueurs.
+  /// Vide quand l'équipe n'est pas connue à l'avance.
+  late final List<String> _rotatedRoster;
 
   late WordPair _words;
   late List<Player> _cards;
@@ -87,6 +98,7 @@ class GameController extends ChangeNotifier {
   GamePhase _phase = GamePhase.distribution;
   Winner? _winner;
   int? _firstSpeakerCardId;
+  int? _lastEliminatedCardId;
   int _roundNumber = 1;
 
   /// Mot des civils, révélé seulement en fin de partie ou si Mr White le devine.
@@ -104,6 +116,28 @@ class GameController extends ChangeNotifier {
   int get takenCardCount => _cards.where((p) => p.isTaken).length;
 
   bool get isDistributionComplete => takenCardCount == settings.playerCount;
+
+  /// Fait démarrer la liste des joueurs sur l'un d'eux, choisi au hasard.
+  List<String> _rotate(List<String> roster) {
+    if (roster.length != settings.playerCount) return const [];
+    final start = _random.nextInt(roster.length);
+    return [...roster.sublist(start), ...roster.sublist(0, start)];
+  }
+
+  /// Vrai quand l'application désigne elle-même qui doit prendre une carte.
+  bool get hasFixedOrder => _rotatedRoster.isNotEmpty;
+
+  /// Joueur appelé à choisir une carte, `null` si chacun se présente librement.
+  String? get nextPlayerName =>
+      hasFixedOrder && !isDistributionComplete ? _rotatedRoster[takenCardCount] : null;
+
+  /// L'équipe de la partie en cours, dans l'ordre de passage : sert à relancer
+  /// une partie avec les mêmes joueurs.
+  List<String> get playerNames => [
+        for (final p in _cards.where((p) => p.isTaken).toList()
+          ..sort((a, b) => a.pickOrder!.compareTo(b.pickOrder!)))
+          p.name!,
+      ];
 
   /// Distribue les rôles au hasard sur les cartes et tire une paire de mots.
   void _deal() {
@@ -136,12 +170,17 @@ class GameController extends ChangeNotifier {
   }
 
   /// Un joueur choisit une carte encore libre et donne son nom.
+  ///
+  /// Quand l'équipe est reprise d'une partie précédente, le nom est imposé par
+  /// l'ordre de passage et [name] est ignoré.
   void claimCard(int cardId, String name) {
     final player = _cards[cardId];
     assert(!player.isTaken, 'Cette carte a déjà été choisie.');
-    assert(!isNameTaken(name), 'Ce nom est déjà pris.');
     final rank = takenCardCount;
-    player.name = name.trim().isEmpty ? suggestedName : name.trim();
+    final imposed = hasFixedOrder ? _rotatedRoster[rank] : null;
+    assert(imposed != null || !isNameTaken(name), 'Ce nom est déjà pris.');
+    player.name =
+        imposed ?? (name.trim().isEmpty ? suggestedName : name.trim());
     player.pickOrder = rank;
     notifyListeners();
   }
@@ -184,6 +223,27 @@ class GameController extends ChangeNotifier {
     _firstSpeakerCardId = pool[_random.nextInt(pool.length)].cardId;
   }
 
+  /// Joueur encore en vie qui suit l'éliminé dans l'ordre de passage.
+  ///
+  /// Un Mr White est sauté, il ne commence jamais un tour de table.
+  /// Renvoie `null` tant qu'aucun joueur n'a été éliminé.
+  int? _speakerAfterElimination() {
+    final eliminated = _lastEliminatedCardId;
+    if (eliminated == null) return null;
+    final seated = _cards.where((p) => p.pickOrder != null).toList()
+      ..sort((a, b) => a.pickOrder!.compareTo(b.pickOrder!));
+    final from = seated.indexWhere((p) => p.cardId == eliminated);
+    if (from < 0) return null;
+    int? fallback;
+    for (var step = 1; step <= seated.length; step++) {
+      final player = seated[(from + step) % seated.length];
+      if (!player.isAlive) continue;
+      fallback ??= player.cardId;
+      if (player.role != Role.mrWhite) return player.cardId;
+    }
+    return fallback;
+  }
+
   /// Fin du tour de table : place les joueurs en phase de vote.
   void startVote() {
     _phase = GamePhase.voting;
@@ -198,6 +258,7 @@ class GameController extends ChangeNotifier {
     final player = _cards[cardId];
     player.isAlive = false;
     player.isRevealed = true;
+    _lastEliminatedCardId = cardId;
     if (player.role != Role.mrWhite) {
       _resolveOutcome();
     }
@@ -233,11 +294,17 @@ class GameController extends ChangeNotifier {
     }
   }
 
-  /// Enchaîne sur le tour de table suivant, avec un nouveau premier joueur.
+  /// Enchaîne sur le tour de table suivant : la parole repart du joueur qui
+  /// suit celui qui vient d'être éliminé.
   void startNextRound() {
     assert(_phase == GamePhase.roundTable);
     _roundNumber++;
-    _pickFirstSpeaker();
+    final next = _speakerAfterElimination();
+    if (next == null) {
+      _pickFirstSpeaker();
+    } else {
+      _firstSpeakerCardId = next;
+    }
     notifyListeners();
   }
 

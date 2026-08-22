@@ -40,11 +40,16 @@ class ResultScreen extends StatelessWidget {
     return 'Les undercover gagnent !';
   }
 
+  /// Relance une partie avec la même équipe : l'ordre de passage est conservé,
+  /// seul le premier joueur appelé à choisir une carte change.
   void _replay(BuildContext context) {
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(
         builder: (_) => DistributionScreen(
-          controller: GameController(controller.settings),
+          controller: GameController(
+            controller.settings,
+            roster: controller.playerNames,
+          ),
         ),
       ),
       (route) => route.isFirst,

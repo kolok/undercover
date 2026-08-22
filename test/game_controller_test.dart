@@ -107,6 +107,42 @@ void main() {
       expect(game.isDistributionComplete, isTrue);
     });
 
+    test('rejouer conserve l\'équipe et l\'ordre, seul le départ change', () {
+      const roster = ['Ana', 'Bob', 'Cleo', 'Dan'];
+      final starts = <String>{};
+      for (var seed = 0; seed < 30; seed++) {
+        final game = GameController(
+          const GameSettings(playerCount: 4, undercoverCount: 1, mrWhiteCount: 0),
+          random: Random(seed),
+          roster: roster,
+        );
+        expect(game.hasFixedOrder, isTrue);
+        // L'ordre reste le même, à une rotation près.
+        for (var i = 0; i < roster.length; i++) {
+          final expected = game.nextPlayerName!;
+          game.claimCard(i, 'ignoré');
+          expect(game.cards[i].name, expected);
+        }
+        final order = game.playerNames;
+        starts.add(order.first);
+        final offset = roster.indexOf(order.first);
+        expect(order, [
+          ...roster.sublist(offset),
+          ...roster.sublist(0, offset),
+        ]);
+        expect(game.nextPlayerName, isNull);
+      }
+      expect(starts.length, greaterThan(1), reason: 'le premier est tiré au sort');
+    });
+
+    test('sans équipe reprise, chacun saisit son nom', () {
+      final game = buildGame(players: 3, undercover: 1, mrWhite: 0);
+      expect(game.hasFixedOrder, isFalse);
+      expect(game.nextPlayerName, isNull);
+      game.claimCard(0, 'Zoé');
+      expect(game.playerNames, ['Zoé']);
+    });
+
     test('un nom déjà pris est refusé, casse ignorée', () {
       final game = buildGame(players: 3, undercover: 1, mrWhite: 0);
       game.claimCard(0, 'Zoé');
@@ -139,6 +175,57 @@ void main() {
         );
         dealAll(game);
         expect(game.firstSpeaker!.role, isNot(Role.mrWhite));
+      }
+    });
+
+    test('le tour suivant repart du joueur après l\'éliminé', () {
+      final game = buildGame(players: 7, undercover: 2, mrWhite: 0);
+      dealAll(game);
+      final seated = game.cards.toList()
+        ..sort((a, b) => a.pickOrder!.compareTo(b.pickOrder!));
+      final victim = seated[3];
+      game.startVote();
+      game.eliminate(victim.cardId);
+      game.startNextRound();
+      expect(game.firstSpeaker!.cardId, seated[4].cardId);
+      expect(game.speakingOrder.map((p) => p.cardId), [
+        for (var i = 4; i < seated.length; i++) seated[i].cardId,
+        for (var i = 0; i < 3; i++) seated[i].cardId,
+      ]);
+    });
+
+    test('l\'éliminé en fin de liste renvoie au premier joueur', () {
+      final game = buildGame(players: 7, undercover: 2, mrWhite: 0);
+      dealAll(game);
+      final seated = game.cards.toList()
+        ..sort((a, b) => a.pickOrder!.compareTo(b.pickOrder!));
+      game.startVote();
+      game.eliminate(seated.last.cardId);
+      game.startNextRound();
+      expect(game.firstSpeaker!.cardId, seated.first.cardId);
+    });
+
+    test('un Mr White juste après l\'éliminé est sauté', () {
+      for (var seed = 0; seed < 50; seed++) {
+        final game = GameController(
+          const GameSettings(
+              playerCount: 7, undercoverCount: 1, mrWhiteCount: 1),
+          random: Random(seed),
+          wordPairs: _pairs,
+        );
+        dealAll(game);
+        final seated = game.cards.toList()
+          ..sort((a, b) => a.pickOrder!.compareTo(b.pickOrder!));
+        final mrWhiteSeat = seated.indexWhere((p) => p.role == Role.mrWhite);
+        // On élimine celui qui précède Mr White dans l'ordre de passage.
+        final victim = seated[(mrWhiteSeat - 1 + seated.length) % seated.length];
+        game.startVote();
+        game.eliminate(victim.cardId);
+        if (game.winner != null) continue;
+        game.startNextRound();
+        expect(game.firstSpeaker!.role, isNot(Role.mrWhite));
+        expect(game.firstSpeaker!.cardId,
+            seated[(mrWhiteSeat + 1) % seated.length].cardId);
       }
     });
 

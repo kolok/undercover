@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../game/game_controller.dart';
 import '../models/player.dart';
 import '../theme.dart';
+import '../widgets/game_heading.dart';
 import '../widgets/player_card.dart';
 import '../widgets/quit_guard.dart';
 import 'elimination_screen.dart';
@@ -76,24 +77,20 @@ class _RoundScreenState extends State<RoundScreen> {
               builder: (context, _) {
                 final voting = _game.phase == GamePhase.voting;
                 final order = _game.speakingOrder;
+                final starter = _game.firstSpeaker?.displayName ?? '';
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
                     children: [
-                      Text(
-                        voting ? 'Qui est éliminé ?' : 'Manche ${_game.roundNumber}',
-                        style: const TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.w800),
-                      ),
-                      const SizedBox(height: 6),
-                      Text(
-                        voting
+                      GameHeading(
+                        instruction: voting
+                            ? 'Qui est éliminé ?'
+                            : 'Manche ${_game.roundNumber}',
+                        highlight: starter,
+                        subtitle: voting
                             ? 'Après le vote, touchez la carte du joueur éliminé.'
-                            : '${_game.firstSpeaker?.displayName ?? ''} commence, '
-                                'puis chacun donne son indice dans l\'ordre.',
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                            color: AppColors.muted, fontSize: 13, height: 1.4),
+                            : '${GameHeading.namePlaceholder} commence, puis '
+                                'chacun donne son indice dans l\'ordre.',
                       ),
                       const SizedBox(height: 16),
                       Expanded(
