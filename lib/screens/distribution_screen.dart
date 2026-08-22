@@ -29,7 +29,10 @@ class _DistributionScreenState extends State<DistributionScreen> {
     final navigator = Navigator.of(context);
     final name = await navigator.push<String>(
       MaterialPageRoute(
-        builder: (_) => PlayerNameScreen(suggestedName: _game.suggestedName),
+        builder: (_) => PlayerNameScreen(
+          suggestedName: _game.suggestedName,
+          takenNames: _game.takenNames,
+        ),
       ),
     );
     if (name == null || !mounted) return;

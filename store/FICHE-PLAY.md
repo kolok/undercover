@@ -67,12 +67,31 @@ Pas de compte, pas de publicité, pas de collecte de données. Juste un téléph
 posé sur la table, et vos amis à convaincre.
 ```
 
-**Notes de version** (500 car. max)
+**Nom de la version** (interne, non affiché sur le Store)
 
 ```
-Première version : parties de 3 à 10 joueurs, 1 à 3 undercover, 0 à 2 Mr White,
-banque de mots hors ligne.
+1.0.0 (1)
 ```
+
+Play Console le pré-remplit avec le versionCode du bundle. La convention
+`versionName (versionCode)` permet de relier une release à un build d'un coup
+d'œil ; à la prochaine mise à jour, ce sera `1.0.1 (2)`.
+
+**Notes de version** (500 car. max, affichées dans « Nouveautés »)
+
+```
+Première version d'Undercover !
+
+• De 3 à 10 joueurs, avec un seul téléphone
+• 1 à 3 undercover et jusqu'à 2 Mr White par partie
+• Rôles et mots distribués à l'abri des regards
+• Des centaines de paires de mots, 100 % hors ligne
+
+Bon bluff !
+```
+
+Si la console affiche le champ multilingue, encadrer le texte :
+`<fr-FR>…</fr-FR>`.
 
 ## Réponses aux questionnaires « Contenu de l'application »
 

@@ -106,6 +106,26 @@ void main() {
       expect(game.cards[1].name, 'Joueur 3');
       expect(game.isDistributionComplete, isTrue);
     });
+
+    test('un nom déjà pris est refusé, casse ignorée', () {
+      final game = buildGame(players: 3, undercover: 1, mrWhite: 0);
+      game.claimCard(0, 'Zoé');
+      expect(game.isNameTaken('zoé'), isTrue);
+      expect(game.isNameTaken('  ZOÉ '), isTrue);
+      expect(game.isNameTaken('Alex'), isFalse);
+      expect(game.takenNames, ['Zoé']);
+    });
+
+    test('le nom proposé saute les numéros déjà utilisés', () {
+      final game = buildGame(players: 3, undercover: 1, mrWhite: 0);
+      expect(game.suggestedName, 'Joueur 1');
+      game.claimCard(0, 'Joueur 2');
+      expect(game.suggestedName, 'Joueur 3');
+      game.claimCard(1, 'Joueur 3');
+      expect(game.suggestedName, 'Joueur 4');
+      game.claimCard(2, '   ');
+      expect(game.cards[2].name, 'Joueur 4');
+    });
   });
 
   group('Tour de table', () {

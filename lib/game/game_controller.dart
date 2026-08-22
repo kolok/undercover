@@ -125,18 +125,36 @@ class GameController extends ChangeNotifier {
         Role.mrWhite => null,
       };
 
+  /// Noms déjà utilisés par les joueurs ayant pris une carte.
+  List<String> get takenNames =>
+      [for (final p in _cards) if (p.isTaken) p.name!];
+
+  /// Deux joueurs ne peuvent pas porter le même nom (casse ignorée).
+  bool isNameTaken(String name) {
+    final candidate = name.trim().toLowerCase();
+    return takenNames.any((n) => n.toLowerCase() == candidate);
+  }
+
   /// Un joueur choisit une carte encore libre et donne son nom.
   void claimCard(int cardId, String name) {
     final player = _cards[cardId];
     assert(!player.isTaken, 'Cette carte a déjà été choisie.');
+    assert(!isNameTaken(name), 'Ce nom est déjà pris.');
     final rank = takenCardCount;
-    player.name = name.trim().isEmpty ? 'Joueur ${rank + 1}' : name.trim();
+    player.name = name.trim().isEmpty ? suggestedName : name.trim();
     player.pickOrder = rank;
     notifyListeners();
   }
 
-  /// Nom proposé par défaut au prochain joueur qui prend une carte.
-  String get suggestedName => 'Joueur ${takenCardCount + 1}';
+  /// Nom proposé par défaut au prochain joueur qui prend une carte, en
+  /// sautant les numéros qu'un joueur se serait déjà attribués.
+  String get suggestedName {
+    var number = takenCardCount + 1;
+    while (isNameTaken('Joueur $number')) {
+      number++;
+    }
+    return 'Joueur $number';
+  }
 
   /// Démarre le premier tour de table une fois toutes les cartes distribuées.
   void startRoundTable() {

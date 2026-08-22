@@ -4,9 +4,16 @@ import '../theme.dart';
 
 /// Écran joueur 1 : saisie du nom, avec une proposition par défaut.
 class PlayerNameScreen extends StatefulWidget {
-  const PlayerNameScreen({super.key, required this.suggestedName});
+  const PlayerNameScreen({
+    super.key,
+    required this.suggestedName,
+    this.takenNames = const [],
+  });
 
   final String suggestedName;
+
+  /// Noms des joueurs déjà installés : deux joueurs ne peuvent pas les partager.
+  final List<String> takenNames;
 
   @override
   State<PlayerNameScreen> createState() => _PlayerNameScreenState();
@@ -16,15 +23,27 @@ class _PlayerNameScreenState extends State<PlayerNameScreen> {
   late final TextEditingController _controller =
       TextEditingController(text: widget.suggestedName);
 
+  String? _error;
+
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
 
+  bool _isTaken(String name) {
+    final candidate = name.toLowerCase();
+    return widget.takenNames.any((n) => n.trim().toLowerCase() == candidate);
+  }
+
   void _validate() {
-    final name = _controller.text.trim();
-    Navigator.of(context).pop(name.isEmpty ? widget.suggestedName : name);
+    final typed = _controller.text.trim();
+    final name = typed.isEmpty ? widget.suggestedName : typed;
+    if (_isTaken(name)) {
+      setState(() => _error = 'Ce nom est déjà pris, trouve-en un autre.');
+      return;
+    }
+    Navigator.of(context).pop(name);
   }
 
   @override
@@ -60,6 +79,14 @@ class _PlayerNameScreenState extends State<PlayerNameScreen> {
                           maxLength: 14,
                           style: const TextStyle(
                               fontSize: 22, fontWeight: FontWeight.w700),
+                          decoration: InputDecoration(
+                            errorText: _error,
+                            errorStyle: const TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.w700),
+                          ),
+                          onChanged: (_) {
+                            if (_error != null) setState(() => _error = null);
+                          },
                           onSubmitted: (_) => _validate(),
                         ),
                       ],

@@ -102,4 +102,39 @@ void main() {
     expect(find.text('Citron'), findsOneWidget);
     expect(game.winner, Winner.mrWhiteGuess);
   });
+
+  testWidgets('un nom déjà pris est refusé à la saisie', (tester) async {
+    await tester.pumpWidget(const UndercoverApp());
+    await tester.tap(find.text('Démarrer la partie'));
+    await tester.pumpAndSettle();
+
+    for (var i = 0; i < 3; i++) {
+      await tester
+          .tap(find.widgetWithIcon(IconButton, Icons.remove_rounded).first);
+      await tester.pumpAndSettle();
+    }
+    await tester.tap(find.text('Jouer'));
+    await tester.pumpAndSettle();
+
+    await takeCard(tester, 'Ana');
+
+    // Le deuxième joueur tente le même nom, à la casse près.
+    await tester.tap(find.text('Libre').first);
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField), 'ana');
+    await tester.tap(find.text('Valider'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Ce nom est déjà pris, trouve-en un autre.'),
+        findsOneWidget);
+    expect(find.text('Valider'), findsOneWidget, reason: 'on reste sur la saisie');
+
+    // Un autre nom débloque la validation.
+    await tester.enterText(find.byType(TextField), 'Bob');
+    await tester.pumpAndSettle();
+    expect(find.text('Ce nom est déjà pris, trouve-en un autre.'), findsNothing);
+    await tester.tap(find.text('Valider'));
+    await tester.pumpAndSettle();
+    expect(find.text('BOB'), findsOneWidget, reason: 'la carte est attribuée');
+  });
 }
