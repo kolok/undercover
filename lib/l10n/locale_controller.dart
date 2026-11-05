@@ -28,8 +28,8 @@ class LocaleController extends ChangeNotifier {
   /// Les langues proposées dans le sélecteur. Toutes sont traduites : voir
   /// [AppLocalizations.supportedLocales].
   static List<Locale> get selectableLocales => [
-        for (final code in languageNames.keys) Locale(code),
-      ];
+    for (final code in languageNames.keys) Locale(code),
+  ];
 
   /// Relit le choix enregistré. Une valeur inconnue est ignorée.
   Future<void> restore() async {
@@ -64,9 +64,8 @@ class LocaleScope extends InheritedWidget {
 
   final LocaleController controller;
 
-  static LocaleController of(BuildContext context) => context
-      .dependOnInheritedWidgetOfExactType<LocaleScope>()!
-      .controller;
+  static LocaleController of(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<LocaleScope>()!.controller;
 
   @override
   bool updateShouldNotify(LocaleScope oldWidget) =>

@@ -33,8 +33,9 @@ class _PlayerWordScreenState extends State<PlayerWordScreen> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     return Scaffold(
-      appBar:
-          AppBar(title: Text(widget.player.displayName(l10n).toUpperCase())),
+      appBar: AppBar(
+        title: Text(widget.player.displayName(l10n).toUpperCase()),
+      ),
       body: AppBackground(
         child: SafeArea(
           child: Padding(
@@ -111,8 +112,11 @@ class _PlayerWordScreenState extends State<PlayerWordScreen> {
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.help_outline_rounded,
-              size: 52, color: AppColors.mrWhite),
+          const Icon(
+            Icons.help_outline_rounded,
+            size: 52,
+            color: AppColors.mrWhite,
+          ),
           const SizedBox(height: 16),
           Text(
             l10n.wordMrWhiteTitle,
@@ -136,9 +140,10 @@ class _PlayerWordScreenState extends State<PlayerWordScreen> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(l10n.wordSecretLabel,
-            style: const TextStyle(
-                color: AppColors.muted, letterSpacing: 1.5)),
+        Text(
+          l10n.wordSecretLabel,
+          style: const TextStyle(color: AppColors.muted, letterSpacing: 1.5),
+        ),
         const SizedBox(height: 14),
         Text(
           widget.secretWord!,

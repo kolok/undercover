@@ -83,9 +83,10 @@ class _DistributionScreenState extends State<DistributionScreen> {
                         instruction: done
                             ? l10n.distributionDone
                             : next == null
-                                ? l10n.distributionNextAnyone
-                                : l10n.distributionNextNamed(
-                                    GameHeading.namePlaceholder),
+                            ? l10n.distributionNextAnyone
+                            : l10n.distributionNextNamed(
+                                GameHeading.namePlaceholder,
+                              ),
                         highlight: next,
                         subtitle: l10n.distributionProgress(
                           _game.takenCardCount,
@@ -98,17 +99,19 @@ class _DistributionScreenState extends State<DistributionScreen> {
                           padding: const EdgeInsets.only(bottom: 12),
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 3,
-                            crossAxisSpacing: 12,
-                            mainAxisSpacing: 12,
-                            childAspectRatio: 0.78,
-                          ),
+                                crossAxisCount: 3,
+                                crossAxisSpacing: 12,
+                                mainAxisSpacing: 12,
+                                childAspectRatio: 0.78,
+                              ),
                           itemCount: _game.cards.length,
                           itemBuilder: (context, index) {
                             final card = _game.cards[index];
                             return PlayerCard(
                               player: card,
-                              onTap: card.isTaken ? null : () => _pickCard(card),
+                              onTap: card.isTaken
+                                  ? null
+                                  : () => _pickCard(card),
                             );
                           },
                         ),

@@ -38,9 +38,9 @@ class HomeScreen extends StatelessWidget {
                   l10n.appTitle,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 4,
-                      ),
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 4,
+                  ),
                 ),
                 const SizedBox(height: 14),
                 Text(
@@ -58,8 +58,10 @@ class HomeScreen extends StatelessWidget {
                 const SizedBox(height: 12),
                 TextButton(
                   onPressed: () => _showRules(context),
-                  child: Text(l10n.homeRules,
-                      style: const TextStyle(color: AppColors.muted)),
+                  child: Text(
+                    l10n.homeRules,
+                    style: const TextStyle(color: AppColors.muted),
+                  ),
                 ),
                 const SizedBox(height: 16),
               ],
@@ -86,10 +88,8 @@ class HomeScreen extends StatelessWidget {
   void _showRules(BuildContext context) =>
       _showSheet(context, const _RulesSheet());
 
-  void _showLanguages(BuildContext context) => _showSheet(
-        context,
-        _LanguageSheet(controller: LocaleScope.of(context)),
-      );
+  void _showLanguages(BuildContext context) =>
+      _showSheet(context, _LanguageSheet(controller: LocaleScope.of(context)));
 }
 
 class _RulesSheet extends StatelessWidget {
@@ -97,11 +97,11 @@ class _RulesSheet extends StatelessWidget {
 
   /// Les quatre sections des règles, dans l'ordre d'affichage.
   static List<(String, String)> _sections(AppLocalizations l10n) => [
-        (l10n.rulesSetupTitle, l10n.rulesSetupBody),
-        (l10n.rulesFlowTitle, l10n.rulesFlowBody),
-        (l10n.rulesMrWhiteTitle, l10n.rulesMrWhiteBody),
-        (l10n.rulesVictoryTitle, l10n.rulesVictoryBody),
-      ];
+    (l10n.rulesSetupTitle, l10n.rulesSetupBody),
+    (l10n.rulesFlowTitle, l10n.rulesFlowBody),
+    (l10n.rulesMrWhiteTitle, l10n.rulesMrWhiteBody),
+    (l10n.rulesVictoryTitle, l10n.rulesVictoryBody),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -114,15 +114,19 @@ class _RulesSheet extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               for (final (title, body) in _sections(context.l10n)) ...[
-                Text(title,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w800,
-                      fontSize: 17,
-                      color: AppColors.primary,
-                    )),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w800,
+                    fontSize: 17,
+                    color: AppColors.primary,
+                  ),
+                ),
                 const SizedBox(height: 6),
-                Text(body,
-                    style: const TextStyle(color: AppColors.muted, height: 1.5)),
+                Text(
+                  body,
+                  style: const TextStyle(color: AppColors.muted, height: 1.5),
+                ),
                 const SizedBox(height: 20),
               ],
             ],
@@ -149,12 +153,14 @@ class _LanguageSheet extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(l10n.languageTitle,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w800,
-                  fontSize: 17,
-                  color: AppColors.primary,
-                )),
+            Text(
+              l10n.languageTitle,
+              style: const TextStyle(
+                fontWeight: FontWeight.w800,
+                fontSize: 17,
+                color: AppColors.primary,
+              ),
+            ),
             const SizedBox(height: 8),
             _LanguageTile(
               label: l10n.languageSystem,
@@ -163,7 +169,8 @@ class _LanguageSheet extends StatelessWidget {
             ),
             for (final locale in LocaleController.selectableLocales)
               _LanguageTile(
-                label: LocaleController.languageNames[locale.languageCode] ??
+                label:
+                    LocaleController.languageNames[locale.languageCode] ??
                     locale.languageCode,
                 selected: selected == locale.languageCode,
                 onTap: () => _choose(context, locale),
@@ -194,11 +201,13 @@ class _LanguageTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(label,
-          style: TextStyle(
-            fontWeight: selected ? FontWeight.w800 : FontWeight.w500,
-            color: selected ? AppColors.primary : Colors.white,
-          )),
+      title: Text(
+        label,
+        style: TextStyle(
+          fontWeight: selected ? FontWeight.w800 : FontWeight.w500,
+          color: selected ? AppColors.primary : Colors.white,
+        ),
+      ),
       trailing: selected
           ? const Icon(Icons.check_rounded, color: AppColors.primary)
           : null,

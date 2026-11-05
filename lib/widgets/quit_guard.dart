@@ -43,8 +43,10 @@ Future<bool> confirmQuit(BuildContext context) async {
         ),
         TextButton(
           onPressed: () => Navigator.of(context).pop(true),
-          child: Text(l10n.actionQuit,
-              style: const TextStyle(color: AppColors.undercover)),
+          child: Text(
+            l10n.actionQuit,
+            style: const TextStyle(color: AppColors.undercover),
+          ),
         ),
       ],
     ),

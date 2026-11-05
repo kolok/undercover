@@ -40,10 +40,10 @@ class GameHeading extends StatelessWidget {
   );
 
   static TextStyle _nameStyle(double fontSize) => TextStyle(
-        fontSize: fontSize,
-        fontWeight: FontWeight.w900,
-        color: AppColors.primary,
-      );
+    fontSize: fontSize,
+    fontWeight: FontWeight.w900,
+    color: AppColors.primary,
+  );
 
   /// Remplace chaque jeton par le nom, écrit en plus gros.
   List<InlineSpan> _spans(String text, double nameSize) {
