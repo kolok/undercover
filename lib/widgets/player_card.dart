@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/l10n.dart';
 import '../models/player.dart';
 import '../theme.dart';
 
@@ -89,15 +90,16 @@ class PlayerCard extends StatelessWidget {
   }
 
   Widget _buildFace(BuildContext context, Role? revealedRole) {
+    final l10n = context.l10n;
     if (!player.isTaken) {
-      return const Column(
+      return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.question_mark_rounded,
+          const Icon(Icons.question_mark_rounded,
               size: 30, color: AppColors.primary),
-          SizedBox(height: 6),
-          Text('Libre',
-              style: TextStyle(color: AppColors.muted, fontSize: 12)),
+          const SizedBox(height: 6),
+          Text(l10n.cardFree,
+              style: const TextStyle(color: AppColors.muted, fontSize: 12)),
         ],
       );
     }
@@ -120,7 +122,7 @@ class PlayerCard extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 2),
           child: Text(
-            player.displayName,
+            player.displayName(l10n),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
@@ -129,7 +131,7 @@ class PlayerCard extends StatelessWidget {
         ),
         if (revealedRole != null)
           Text(
-            revealedRole.label,
+            revealedRole.label(l10n),
             style: TextStyle(
                 fontSize: 11,
                 color: roleColor(revealedRole),

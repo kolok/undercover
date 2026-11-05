@@ -3,11 +3,26 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:undercover/game/game_controller.dart';
+import 'package:undercover/l10n/l10n.dart';
+import 'package:undercover/l10n/locale_controller.dart';
 import 'package:undercover/main.dart';
 import 'package:undercover/models/player.dart';
 import 'package:undercover/models/word_pair.dart';
 import 'package:undercover/screens/elimination_screen.dart';
 import 'package:undercover/theme.dart';
+
+/// Les tests fixent la langue : les textes attendus sont ceux du français.
+UndercoverApp frenchApp() =>
+    UndercoverApp(locales: LocaleController(initialLocale: const Locale('fr')));
+
+/// Enveloppe un écran isolé avec les traductions françaises.
+Widget frenchHost(Widget home) => MaterialApp(
+      theme: buildAppTheme(),
+      locale: const Locale('fr'),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: home,
+    );
 
 /// Fait choisir une carte, saisir un nom et découvrir le mot secret.
 Future<void> takeCard(WidgetTester tester, String name) async {
@@ -25,7 +40,7 @@ Future<void> takeCard(WidgetTester tester, String name) async {
 void main() {
   testWidgets('partie complète à 3 joueurs, de l\'accueil au résultat',
       (tester) async {
-    await tester.pumpWidget(const UndercoverApp());
+    await tester.pumpWidget(frenchApp());
     await tester.tap(find.text('Démarrer la partie'));
     await tester.pumpAndSettle();
 
@@ -100,10 +115,9 @@ void main() {
         game.cards.firstWhere((p) => p.role == Role.mrWhite);
     game.eliminate(mrWhite.cardId);
 
-    await tester.pumpWidget(MaterialApp(
-      theme: buildAppTheme(),
-      home: EliminationScreen(controller: game, player: mrWhite),
-    ));
+    await tester.pumpWidget(
+      frenchHost(EliminationScreen(controller: game, player: mrWhite)),
+    );
 
     expect(find.text('était Mr White'), findsOneWidget);
     await tester.tap(find.text('Deviner le mot des civils'));
@@ -119,7 +133,7 @@ void main() {
   });
 
   testWidgets('un nom déjà pris est refusé à la saisie', (tester) async {
-    await tester.pumpWidget(const UndercoverApp());
+    await tester.pumpWidget(frenchApp());
     await tester.tap(find.text('Démarrer la partie'));
     await tester.pumpAndSettle();
 

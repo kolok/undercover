@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../data/word_bank.dart';
 import '../game/game_controller.dart';
+import '../l10n/l10n.dart';
 import '../models/player.dart';
 import '../theme.dart';
 import 'distribution_screen.dart';
@@ -17,38 +19,43 @@ class ResultScreen extends StatelessWidget {
         _ => AppColors.undercover,
       };
 
-  String get _title => switch (controller.winner) {
-        Winner.civilians => 'Les civils gagnent !',
-        Winner.mrWhiteGuess => 'Mr White gagne !',
-        _ => _survivingImpostorsLabel(),
+  String _title(AppLocalizations l10n) => switch (controller.winner) {
+        Winner.civilians => l10n.winCivilians,
+        Winner.mrWhiteGuess => l10n.winMrWhite,
+        _ => _survivingImpostorsLabel(l10n),
       };
 
-  String get _subtitle => switch (controller.winner) {
-        Winner.civilians =>
-          'Tous les imposteurs ont été démasqués.',
-        Winner.mrWhiteGuess =>
-          'Il a deviné le mot des civils après son élimination.',
-        _ => 'Il ne reste plus qu\'un seul civil face à eux.',
+  String _subtitle(AppLocalizations l10n) => switch (controller.winner) {
+        Winner.civilians => l10n.winCiviliansSubtitle,
+        Winner.mrWhiteGuess => l10n.winMrWhiteSubtitle,
+        _ => l10n.winImpostorsSubtitle,
       };
 
-  String _survivingImpostorsLabel() {
+  String _survivingImpostorsLabel(AppLocalizations l10n) {
     final survivors = controller.alivePlayers.where((p) => p.isImpostor);
     final hasMrWhite = survivors.any((p) => p.role == Role.mrWhite);
     final hasUndercover = survivors.any((p) => p.role == Role.undercover);
-    if (hasMrWhite && !hasUndercover) return 'Mr White gagne !';
-    if (hasMrWhite) return 'Undercover & Mr White gagnent !';
-    return 'Les undercover gagnent !';
+    if (hasMrWhite && !hasUndercover) return l10n.winMrWhite;
+    if (hasMrWhite) return l10n.winUndercoverAndMrWhite;
+    return l10n.winUndercovers;
   }
 
   /// Relance une partie avec la même équipe : l'ordre de passage est conservé,
-  /// seul le premier joueur appelé à choisir une carte change.
-  void _replay(BuildContext context) {
-    Navigator.of(context).pushAndRemoveUntil(
+  /// seul le premier joueur appelé à choisir une carte change. Une nouvelle
+  /// paire de mots est tirée dans la langue courante.
+  Future<void> _replay(BuildContext context) async {
+    final l10n = context.l10n;
+    final language = Localizations.localeOf(context).languageCode;
+    final navigator = Navigator.of(context);
+    final pairs = await wordBank.load(language);
+    navigator.pushAndRemoveUntil(
       MaterialPageRoute(
         builder: (_) => DistributionScreen(
           controller: GameController(
             controller.settings,
+            wordPairs: pairs,
             roster: controller.playerNames,
+            defaultPlayerName: l10n.defaultPlayerName,
           ),
         ),
       ),
@@ -58,12 +65,13 @@ class ResultScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final players = controller.cards.where((p) => p.isTaken).toList()
       ..sort((a, b) => a.pickOrder!.compareTo(b.pickOrder!));
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('FIN DE PARTIE'),
+        title: Text(l10n.resultTitle),
         automaticallyImplyLeading: false,
       ),
       body: AppBackground(
@@ -80,7 +88,7 @@ class ResultScreen extends StatelessWidget {
                           size: 72, color: _winnerColor),
                       const SizedBox(height: 16),
                       Text(
-                        _title,
+                        _title(l10n),
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 28,
@@ -90,7 +98,7 @@ class ResultScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        _subtitle,
+                        _subtitle(l10n),
                         textAlign: TextAlign.center,
                         style: const TextStyle(color: AppColors.muted),
                       ),
@@ -99,7 +107,7 @@ class ResultScreen extends StatelessWidget {
                         children: [
                           Expanded(
                             child: _WordTile(
-                              label: 'Mot des civils',
+                              label: l10n.wordCivilians,
                               word: controller.words.civilian,
                               color: AppColors.civilian,
                             ),
@@ -107,7 +115,7 @@ class ResultScreen extends StatelessWidget {
                           const SizedBox(width: 12),
                           Expanded(
                             child: _WordTile(
-                              label: 'Mot des undercover',
+                              label: l10n.wordUndercover,
                               word: controller.words.undercover,
                               color: AppColors.undercover,
                             ),
@@ -122,13 +130,13 @@ class ResultScreen extends StatelessWidget {
                 ),
                 FilledButton(
                   onPressed: () => _replay(context),
-                  child: const Text('Rejouer'),
+                  child: Text(l10n.actionReplay),
                 ),
                 const SizedBox(height: 10),
                 OutlinedButton(
                   onPressed: () =>
                       Navigator.of(context).popUntil((route) => route.isFirst),
-                  child: const Text('Retour à l\'accueil'),
+                  child: Text(l10n.actionHome),
                 ),
                 const SizedBox(height: 20),
               ],
@@ -183,6 +191,7 @@ class _PlayerRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final color = roleColor(player.role);
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
@@ -205,7 +214,7 @@ class _PlayerRow extends StatelessWidget {
           const SizedBox(width: 12),
           Expanded(
             child: Text(
-              player.displayName,
+              player.displayName(l10n),
               style: TextStyle(
                 fontWeight: FontWeight.w700,
                 decoration: player.isAlive ? null : TextDecoration.lineThrough,
@@ -213,7 +222,8 @@ class _PlayerRow extends StatelessWidget {
               ),
             ),
           ),
-          Text(player.role.label, style: TextStyle(color: color, fontSize: 13)),
+          Text(player.role.label(l10n),
+              style: TextStyle(color: color, fontSize: 13)),
         ],
       ),
     );

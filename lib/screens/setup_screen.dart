@@ -2,7 +2,9 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import '../data/word_bank.dart';
 import '../game/game_controller.dart';
+import '../l10n/l10n.dart';
 import '../theme.dart';
 import 'distribution_screen.dart';
 
@@ -30,10 +32,32 @@ class _SetupScreenState extends State<SetupScreen> {
 
   void _update(GameSettings next) => setState(() => _settings = next);
 
+  /// La liste de mots est lue au lancement de la partie, dans la langue
+  /// courante : c'est le seul moment où l'application touche au disque.
+  Future<void> _play() async {
+    final l10n = context.l10n;
+    final language = Localizations.localeOf(context).languageCode;
+    final navigator = Navigator.of(context);
+    final pairs = await wordBank.load(language);
+    if (!mounted) return;
+    navigator.push(
+      MaterialPageRoute(
+        builder: (_) => DistributionScreen(
+          controller: GameController(
+            _settings,
+            wordPairs: pairs,
+            defaultPlayerName: l10n.defaultPlayerName,
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Scaffold(
-      appBar: AppBar(title: const Text('NOMBRE DE JOUEURS')),
+      appBar: AppBar(title: Text(l10n.setupTitle)),
       body: AppBackground(
         child: SafeArea(
           child: Padding(
@@ -45,7 +69,7 @@ class _SetupScreenState extends State<SetupScreen> {
                     children: [
                       const SizedBox(height: 8),
                       _CounterTile(
-                        label: 'Joueurs',
+                        label: l10n.setupPlayers,
                         icon: Icons.groups_rounded,
                         value: _settings.playerCount,
                         min: GameSettings.minPlayers,
@@ -56,7 +80,7 @@ class _SetupScreenState extends State<SetupScreen> {
                       ),
                       const SizedBox(height: 14),
                       _CounterTile(
-                        label: 'Undercover',
+                        label: l10n.roleUndercover,
                         icon: Icons.theater_comedy_rounded,
                         value: _settings.undercoverCount,
                         min: 1,
@@ -67,7 +91,7 @@ class _SetupScreenState extends State<SetupScreen> {
                       ),
                       const SizedBox(height: 14),
                       _CounterTile(
-                        label: 'Mr White',
+                        label: l10n.roleMrWhite,
                         icon: Icons.help_outline_rounded,
                         value: _settings.mrWhiteCount,
                         min: 0,
@@ -79,25 +103,19 @@ class _SetupScreenState extends State<SetupScreen> {
                       const SizedBox(height: 24),
                       _CivilianSummary(settings: _settings),
                       const SizedBox(height: 12),
-                      const Text(
-                        'Les civils restent toujours majoritaires et il y a au '
-                        'moins un undercover.',
+                      Text(
+                        l10n.setupHint,
                         textAlign: TextAlign.center,
-                        style: TextStyle(color: AppColors.muted, fontSize: 13),
+                        style: const TextStyle(
+                            color: AppColors.muted, fontSize: 13),
                       ),
                       const SizedBox(height: 24),
                     ],
                   ),
                 ),
                 FilledButton(
-                  onPressed: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => DistributionScreen(
-                        controller: GameController(_settings),
-                      ),
-                    ),
-                  ),
-                  child: const Text('Jouer'),
+                  onPressed: _play,
+                  child: Text(l10n.setupPlay),
                 ),
                 const SizedBox(height: 20),
               ],
@@ -147,7 +165,7 @@ class _CounterTile extends StatelessWidget {
                 Text(label,
                     style: const TextStyle(
                         fontWeight: FontWeight.w700, fontSize: 16)),
-                Text('de $min à $max',
+                Text(context.l10n.setupRange(min, max),
                     style:
                         const TextStyle(color: AppColors.muted, fontSize: 12)),
               ],
@@ -223,8 +241,9 @@ class _CivilianSummary extends StatelessWidget {
               color: AppColors.civilian,
             ),
           ),
-          const Text('civils',
-              style: TextStyle(color: AppColors.civilian, letterSpacing: 1.5)),
+          Text(context.l10n.setupCivilians,
+              style: const TextStyle(
+                  color: AppColors.civilian, letterSpacing: 1.5)),
         ],
       ),
     );

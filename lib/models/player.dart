@@ -1,13 +1,8 @@
 /// Rôle secret attribué à un joueur au début de la partie.
-enum Role {
-  civilian('Civil'),
-  undercover('Undercover'),
-  mrWhite('Mr White');
-
-  const Role(this.label);
-
-  final String label;
-}
+///
+/// Le libellé affiché est traduit : voir l'extension `RoleLabel` dans
+/// `lib/l10n/l10n.dart`.
+enum Role { civilian, undercover, mrWhite }
 
 /// Camp gagnant à la fin de la partie.
 enum Winner {
@@ -46,6 +41,4 @@ class Player {
 
   /// Undercover et Mr White forment le camp opposé aux civils.
   bool get isImpostor => role != Role.civilian;
-
-  String get displayName => name ?? 'Carte ${cardId + 1}';
 }

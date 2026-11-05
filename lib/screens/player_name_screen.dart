@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/l10n.dart';
 import '../theme.dart';
 
 /// Écran joueur 1 : saisie du nom, avec une proposition par défaut.
@@ -23,6 +24,7 @@ class _PlayerNameScreenState extends State<PlayerNameScreen> {
   late final TextEditingController _controller =
       TextEditingController(text: widget.suggestedName);
 
+  /// Message d'erreur affiché sous le champ, `null` tant que tout va bien.
   String? _error;
 
   @override
@@ -40,7 +42,7 @@ class _PlayerNameScreenState extends State<PlayerNameScreen> {
     final typed = _controller.text.trim();
     final name = typed.isEmpty ? widget.suggestedName : typed;
     if (_isTaken(name)) {
-      setState(() => _error = 'Ce nom est déjà pris, trouve-en un autre.');
+      setState(() => _error = context.l10n.nameTaken);
       return;
     }
     Navigator.of(context).pop(name);
@@ -48,8 +50,9 @@ class _PlayerNameScreenState extends State<PlayerNameScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Scaffold(
-      appBar: AppBar(title: const Text('TON NOM')),
+      appBar: AppBar(title: Text(l10n.nameTitle)),
       body: AppBackground(
         child: SafeArea(
           child: Padding(
@@ -64,9 +67,10 @@ class _PlayerNameScreenState extends State<PlayerNameScreen> {
                         const Icon(Icons.badge_rounded,
                             size: 56, color: AppColors.primary),
                         const SizedBox(height: 20),
-                        const Text(
-                          'Comment t\'appelles-tu ?',
-                          style: TextStyle(
+                        Text(
+                          l10n.namePrompt,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
                               fontSize: 20, fontWeight: FontWeight.w800),
                         ),
                         const SizedBox(height: 24),
@@ -95,7 +99,7 @@ class _PlayerNameScreenState extends State<PlayerNameScreen> {
                 ),
                 FilledButton(
                   onPressed: _validate,
-                  child: const Text('Valider'),
+                  child: Text(l10n.nameSubmit),
                 ),
                 const SizedBox(height: 20),
               ],

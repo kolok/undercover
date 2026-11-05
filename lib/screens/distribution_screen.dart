@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../game/game_controller.dart';
+import '../l10n/l10n.dart';
 import '../models/player.dart';
 import '../theme.dart';
 import '../widgets/game_heading.dart';
@@ -65,12 +66,13 @@ class _DistributionScreenState extends State<DistributionScreen> {
   Widget build(BuildContext context) {
     return QuitGuard(
       child: Scaffold(
-        appBar: AppBar(title: const Text('JEU')),
+        appBar: AppBar(title: Text(context.l10n.gameTitle)),
         body: AppBackground(
           child: SafeArea(
             child: ListenableBuilder(
               listenable: _game,
               builder: (context, _) {
+                final l10n = context.l10n;
                 final done = _game.isDistributionComplete;
                 final next = _game.nextPlayerName;
                 return Padding(
@@ -79,14 +81,16 @@ class _DistributionScreenState extends State<DistributionScreen> {
                     children: [
                       GameHeading(
                         instruction: done
-                            ? 'Tout le monde a son mot !'
+                            ? l10n.distributionDone
                             : next == null
-                                ? 'Au joueur suivant de choisir une carte'
-                                : 'Au tour de ${GameHeading.namePlaceholder} '
-                                    'de choisir une carte',
+                                ? l10n.distributionNextAnyone
+                                : l10n.distributionNextNamed(
+                                    GameHeading.namePlaceholder),
                         highlight: next,
-                        subtitle:
-                            '${_game.takenCardCount} / ${_game.settings.playerCount} cartes distribuées',
+                        subtitle: l10n.distributionProgress(
+                          _game.takenCardCount,
+                          _game.settings.playerCount,
+                        ),
                       ),
                       const SizedBox(height: 16),
                       Expanded(
@@ -112,7 +116,7 @@ class _DistributionScreenState extends State<DistributionScreen> {
                       if (done)
                         FilledButton(
                           onPressed: _startRoundTable,
-                          child: const Text('Commencer le tour de table'),
+                          child: Text(l10n.distributionStart),
                         ),
                       const SizedBox(height: 20),
                     ],

@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:undercover/l10n/locale_controller.dart';
 import 'package:undercover/main.dart';
+
+/// Les tests fixent la langue : les textes attendus sont ceux du français.
+UndercoverApp frenchApp() =>
+    UndercoverApp(locales: LocaleController(initialLocale: const Locale('fr')));
 
 void main() {
   testWidgets('on peut aller de l\'accueil à la distribution des cartes',
       (tester) async {
-    await tester.pumpWidget(const UndercoverApp());
+    await tester.pumpWidget(frenchApp());
 
     expect(find.text('UNDERCOVER'), findsOneWidget);
 
@@ -27,7 +32,7 @@ void main() {
 
   testWidgets('un joueur choisit une carte, se nomme et voit son mot',
       (tester) async {
-    await tester.pumpWidget(const UndercoverApp());
+    await tester.pumpWidget(frenchApp());
     await tester.tap(find.text('Démarrer la partie'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Jouer'));
