@@ -1,0 +1,8 @@
+# Génération des classes de traduction à partir des fichiers ARB.
+# Régénérer : flutter gen-l10n (fait aussi automatiquement par flutter run/build).
+arb-dir: lib/l10n
+template-arb-file: app_fr.arb
+output-dir: lib/l10n/generated
+output-localization-file: app_localizations.dart
+output-class: AppLocalizations
+nullable-getter: false

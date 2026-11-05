@@ -103,7 +103,7 @@ void main() {
       expect(game.cards[0].pickOrder, 1);
       expect(game.isDistributionComplete, isFalse);
       game.claimCard(1, '  ');
-      expect(game.cards[1].name, 'Joueur 3');
+      expect(game.cards[1].name, 'Player 3');
       expect(game.isDistributionComplete, isTrue);
     });
 
@@ -114,6 +114,7 @@ void main() {
         final game = GameController(
           const GameSettings(playerCount: 4, undercoverCount: 1, mrWhiteCount: 0),
           random: Random(seed),
+          wordPairs: _pairs,
           roster: roster,
         );
         expect(game.hasFixedOrder, isTrue);
@@ -154,13 +155,13 @@ void main() {
 
     test('le nom proposé saute les numéros déjà utilisés', () {
       final game = buildGame(players: 3, undercover: 1, mrWhite: 0);
-      expect(game.suggestedName, 'Joueur 1');
-      game.claimCard(0, 'Joueur 2');
-      expect(game.suggestedName, 'Joueur 3');
-      game.claimCard(1, 'Joueur 3');
-      expect(game.suggestedName, 'Joueur 4');
+      expect(game.suggestedName, 'Player 1');
+      game.claimCard(0, 'Player 2');
+      expect(game.suggestedName, 'Player 3');
+      game.claimCard(1, 'Player 3');
+      expect(game.suggestedName, 'Player 4');
       game.claimCard(2, '   ');
-      expect(game.cards[2].name, 'Joueur 4');
+      expect(game.cards[2].name, 'Player 4');
     });
   });
 

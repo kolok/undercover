@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/l10n.dart';
 import '../models/player.dart';
 import '../theme.dart';
 
@@ -30,8 +31,10 @@ class _PlayerWordScreenState extends State<PlayerWordScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Scaffold(
-      appBar: AppBar(title: Text(widget.player.displayName.toUpperCase())),
+      appBar:
+          AppBar(title: Text(widget.player.displayName(l10n).toUpperCase())),
       body: AppBackground(
         child: SafeArea(
           child: Padding(
@@ -39,9 +42,10 @@ class _PlayerWordScreenState extends State<PlayerWordScreen> {
             child: Column(
               children: [
                 const SizedBox(height: 8),
-                const Text(
-                  'Personne d\'autre ne doit voir cet écran.',
-                  style: TextStyle(color: AppColors.muted, fontSize: 13),
+                Text(
+                  l10n.wordPrivacy,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: AppColors.muted, fontSize: 13),
                 ),
                 const Spacer(),
                 Expanded(
@@ -65,7 +69,9 @@ class _PlayerWordScreenState extends State<PlayerWordScreen> {
                       ),
                       alignment: Alignment.center,
                       padding: const EdgeInsets.all(24),
-                      child: _revealed ? _buildSecret() : _buildHidden(),
+                      child: _revealed
+                          ? _buildSecret(l10n)
+                          : _buildHidden(l10n),
                     ),
                   ),
                 ),
@@ -74,7 +80,7 @@ class _PlayerWordScreenState extends State<PlayerWordScreen> {
                   onPressed: _revealed
                       ? () => Navigator.of(context).pop()
                       : null,
-                  child: const Text('J\'ai vu, joueur suivant'),
+                  child: Text(l10n.wordSeen),
                 ),
                 const SizedBox(height: 20),
               ],
@@ -85,41 +91,43 @@ class _PlayerWordScreenState extends State<PlayerWordScreen> {
     );
   }
 
-  Widget _buildHidden() {
-    return const Column(
+  Widget _buildHidden(AppLocalizations l10n) {
+    return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(Icons.touch_app_rounded, size: 52, color: AppColors.primary),
-        SizedBox(height: 16),
+        const Icon(Icons.touch_app_rounded, size: 52, color: AppColors.primary),
+        const SizedBox(height: 16),
         Text(
-          'Appuie pour découvrir\nton mot secret',
+          l10n.wordTapToReveal,
           textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
+          style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
         ),
       ],
     );
   }
 
-  Widget _buildSecret() {
+  Widget _buildSecret(AppLocalizations l10n) {
     if (_isMrWhite) {
-      return const Column(
+      return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.help_outline_rounded, size: 52, color: AppColors.mrWhite),
-          SizedBox(height: 16),
+          const Icon(Icons.help_outline_rounded,
+              size: 52, color: AppColors.mrWhite),
+          const SizedBox(height: 16),
           Text(
-            'Tu es Mr White',
-            style: TextStyle(
+            l10n.wordMrWhiteTitle,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
               fontSize: 30,
               fontWeight: FontWeight.w900,
               color: AppColors.mrWhite,
             ),
           ),
-          SizedBox(height: 12),
+          const SizedBox(height: 12),
           Text(
-            'Tu n\'as pas de mot secret.\nÉcoute les autres et improvise.',
+            l10n.wordMrWhiteBody,
             textAlign: TextAlign.center,
-            style: TextStyle(color: AppColors.muted, height: 1.5),
+            style: const TextStyle(color: AppColors.muted, height: 1.5),
           ),
         ],
       );
@@ -128,8 +136,9 @@ class _PlayerWordScreenState extends State<PlayerWordScreen> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const Text('Ton mot secret',
-            style: TextStyle(color: AppColors.muted, letterSpacing: 1.5)),
+        Text(l10n.wordSecretLabel,
+            style: const TextStyle(
+                color: AppColors.muted, letterSpacing: 1.5)),
         const SizedBox(height: 14),
         Text(
           widget.secretWord!,

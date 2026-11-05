@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/l10n.dart';
+import '../l10n/locale_controller.dart';
 import '../theme.dart';
 import '../widgets/theater_mask_logo.dart';
 import 'setup_screen.dart';
@@ -9,6 +11,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Scaffold(
       body: AppBackground(
         child: SafeArea(
@@ -17,13 +20,22 @@ class HomeScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: IconButton(
+                    onPressed: () => _showLanguages(context),
+                    icon: const Icon(Icons.language_rounded),
+                    color: AppColors.muted,
+                    tooltip: l10n.languageTitle,
+                  ),
+                ),
                 const Spacer(flex: 2),
                 const Center(
                   child: TheaterMaskLogo(color: AppColors.primary, size: 104),
                 ),
                 const SizedBox(height: 28),
                 Text(
-                  'UNDERCOVER',
+                  l10n.appTitle,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.displaySmall?.copyWith(
                         fontWeight: FontWeight.w900,
@@ -31,23 +43,23 @@ class HomeScreen extends StatelessWidget {
                       ),
                 ),
                 const SizedBox(height: 14),
-                const Text(
-                  'Un seul téléphone, trois camps,\nun seul mot qui ne colle pas.',
+                Text(
+                  l10n.homeTagline,
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: AppColors.muted, height: 1.5),
+                  style: const TextStyle(color: AppColors.muted, height: 1.5),
                 ),
                 const Spacer(flex: 3),
                 FilledButton(
                   onPressed: () => Navigator.of(context).push(
                     MaterialPageRoute(builder: (_) => const SetupScreen()),
                   ),
-                  child: const Text('Démarrer la partie'),
+                  child: Text(l10n.homeStart),
                 ),
                 const SizedBox(height: 12),
                 TextButton(
                   onPressed: () => _showRules(context),
-                  child: const Text('Règles du jeu',
-                      style: TextStyle(color: AppColors.muted)),
+                  child: Text(l10n.homeRules,
+                      style: const TextStyle(color: AppColors.muted)),
                 ),
                 const SizedBox(height: 16),
               ],
@@ -58,7 +70,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  void _showRules(BuildContext context) {
+  void _showSheet(BuildContext context, Widget child) {
     showModalBottomSheet<void>(
       context: context,
       backgroundColor: AppColors.surface,
@@ -67,38 +79,29 @@ class HomeScreen extends StatelessWidget {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
       ),
-      builder: (context) => const _RulesSheet(),
+      builder: (_) => child,
     );
   }
+
+  void _showRules(BuildContext context) =>
+      _showSheet(context, const _RulesSheet());
+
+  void _showLanguages(BuildContext context) => _showSheet(
+        context,
+        _LanguageSheet(controller: LocaleScope.of(context)),
+      );
 }
 
 class _RulesSheet extends StatelessWidget {
   const _RulesSheet();
 
-  static const _sections = [
-    (
-      'Mise en place',
-      'Chaque joueur reçoit secrètement un mot. Les civils ont tous le même, '
-          'les undercover en ont un proche mais différent. Mr White, lui, '
-          'n\'a aucun mot. Personne ne sait s\'il est civil ou undercover.',
-    ),
-    (
-      'Déroulement',
-      'À tour de rôle, chacun donne un indice décrivant son mot sans le dire. '
-          'Puis tout le monde vote pour éliminer un joueur : son rôle est '
-          'révélé, mais jamais son mot.',
-    ),
-    (
-      'Mr White',
-      'Sans mot, il improvise. S\'il est éliminé, il a une dernière chance : '
-          'deviner le mot des civils. S\'il trouve, il gagne la partie.',
-    ),
-    (
-      'Victoire',
-      'Les civils gagnent en éliminant tous les undercover et Mr White. '
-          'Le camp adverse gagne s\'il ne reste plus qu\'un seul civil.',
-    ),
-  ];
+  /// Les quatre sections des règles, dans l'ordre d'affichage.
+  static List<(String, String)> _sections(AppLocalizations l10n) => [
+        (l10n.rulesSetupTitle, l10n.rulesSetupBody),
+        (l10n.rulesFlowTitle, l10n.rulesFlowBody),
+        (l10n.rulesMrWhiteTitle, l10n.rulesMrWhiteBody),
+        (l10n.rulesVictoryTitle, l10n.rulesVictoryBody),
+      ];
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +113,7 @@ class _RulesSheet extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              for (final (title, body) in _sections) ...[
+              for (final (title, body) in _sections(context.l10n)) ...[
                 Text(title,
                     style: const TextStyle(
                       fontWeight: FontWeight.w800,
@@ -126,6 +129,80 @@ class _RulesSheet extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Choix de la langue : celle du téléphone, ou l'une des langues traduites.
+class _LanguageSheet extends StatelessWidget {
+  const _LanguageSheet({required this.controller});
+
+  final LocaleController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final selected = controller.locale?.languageCode;
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(12, 0, 12, 16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(l10n.languageTitle,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w800,
+                  fontSize: 17,
+                  color: AppColors.primary,
+                )),
+            const SizedBox(height: 8),
+            _LanguageTile(
+              label: l10n.languageSystem,
+              selected: selected == null,
+              onTap: () => _choose(context, null),
+            ),
+            for (final locale in LocaleController.selectableLocales)
+              _LanguageTile(
+                label: LocaleController.languageNames[locale.languageCode] ??
+                    locale.languageCode,
+                selected: selected == locale.languageCode,
+                onTap: () => _choose(context, locale),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _choose(BuildContext context, Locale? locale) {
+    controller.setLocale(locale);
+    Navigator.of(context).pop();
+  }
+}
+
+class _LanguageTile extends StatelessWidget {
+  const _LanguageTile({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(label,
+          style: TextStyle(
+            fontWeight: selected ? FontWeight.w800 : FontWeight.w500,
+            color: selected ? AppColors.primary : Colors.white,
+          )),
+      trailing: selected
+          ? const Icon(Icons.check_rounded, color: AppColors.primary)
+          : null,
+      onTap: onTap,
     );
   }
 }

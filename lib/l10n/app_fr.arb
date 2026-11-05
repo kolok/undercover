@@ -1,0 +1,137 @@
+{
+  "@@locale": "fr",
+
+  "appName": "Undercover",
+  "@appName": {"description": "Nom de l'application"},
+
+  "appTitle": "UNDERCOVER",
+  "homeTagline": "Un seul téléphone, trois camps,\nun seul mot qui ne colle pas.",
+  "homeStart": "Démarrer la partie",
+  "homeRules": "Règles du jeu",
+
+  "languageTitle": "Langue",
+  "languageSystem": "Langue du système",
+
+  "rulesSetupTitle": "Mise en place",
+  "rulesSetupBody": "Chaque joueur reçoit secrètement un mot. Les civils ont tous le même, les undercover en ont un proche mais différent. Mr White, lui, n'a aucun mot. Personne ne sait s'il est civil ou undercover.",
+  "rulesFlowTitle": "Déroulement",
+  "rulesFlowBody": "À tour de rôle, chacun donne un indice décrivant son mot sans le dire. Puis tout le monde vote pour éliminer un joueur : son rôle est révélé, mais jamais son mot.",
+  "rulesMrWhiteTitle": "Mr White",
+  "rulesMrWhiteBody": "Sans mot, il improvise. S'il est éliminé, il a une dernière chance : deviner le mot des civils. S'il trouve, il gagne la partie.",
+  "rulesVictoryTitle": "Victoire",
+  "rulesVictoryBody": "Les civils gagnent en éliminant tous les undercover et Mr White. Le camp adverse gagne s'il ne reste plus qu'un seul civil.",
+
+  "setupTitle": "NOMBRE DE JOUEURS",
+  "setupPlayers": "Joueurs",
+  "setupRange": "de {min} à {max}",
+  "@setupRange": {
+    "placeholders": {"min": {"type": "int"}, "max": {"type": "int"}}
+  },
+  "setupCivilians": "civils",
+  "setupHint": "Les civils restent toujours majoritaires et il y a au moins un undercover.",
+  "setupPlay": "Jouer",
+
+  "roleCivilian": "Civil",
+  "roleUndercover": "Undercover",
+  "roleMrWhite": "Mr White",
+
+  "defaultPlayerName": "Joueur {number}",
+  "@defaultPlayerName": {
+    "description": "Nom proposé par défaut au joueur qui prend une carte",
+    "placeholders": {"number": {"type": "int"}}
+  },
+  "defaultCardName": "Carte {number}",
+  "@defaultCardName": {
+    "placeholders": {"number": {"type": "int"}}
+  },
+
+  "gameTitle": "JEU",
+  "distributionDone": "Tout le monde a son mot !",
+  "distributionNextAnyone": "Au joueur suivant de choisir une carte",
+  "distributionNextNamed": "Au tour de {name} de choisir une carte",
+  "@distributionNextNamed": {
+    "description": "Le jeton {name} est remplacé par le nom, écrit en plus gros",
+    "placeholders": {"name": {"type": "String"}}
+  },
+  "distributionProgress": "{taken} / {total} cartes distribuées",
+  "@distributionProgress": {
+    "placeholders": {"taken": {"type": "int"}, "total": {"type": "int"}}
+  },
+  "distributionStart": "Commencer le tour de table",
+  "cardFree": "Libre",
+
+  "nameTitle": "TON NOM",
+  "namePrompt": "Comment t'appelles-tu ?",
+  "nameTaken": "Ce nom est déjà pris, trouve-en un autre.",
+  "nameSubmit": "Valider",
+
+  "wordPrivacy": "Personne d'autre ne doit voir cet écran.",
+  "wordTapToReveal": "Appuie pour découvrir\nton mot secret",
+  "wordSeen": "J'ai vu, joueur suivant",
+  "wordMrWhiteTitle": "Tu es Mr White",
+  "wordMrWhiteBody": "Tu n'as pas de mot secret.\nÉcoute les autres et improvise.",
+  "wordSecretLabel": "Ton mot secret",
+
+  "roundTitle": "TOUR DE TABLE",
+  "roundNumber": "Manche {number}",
+  "@roundNumber": {
+    "placeholders": {"number": {"type": "int"}}
+  },
+  "roundSpeakingHint": "{name} commence, puis chacun donne son indice dans l'ordre.",
+  "@roundSpeakingHint": {
+    "placeholders": {"name": {"type": "String"}}
+  },
+  "roundFinish": "Finir le tour",
+  "roundVoteQuestion": "Qui est éliminé ?",
+  "roundVoteHint": "Après le vote, touchez la carte du joueur éliminé.",
+  "eliminateConfirmTitle": "Éliminer {name} ?",
+  "@eliminateConfirmTitle": {
+    "placeholders": {"name": {"type": "String"}}
+  },
+  "eliminateConfirmBody": "Son rôle sera révélé, mais pas son mot.",
+
+  "eliminationTitle": "ÉLIMINATION",
+  "eliminationWasCivilian": "était un Civil",
+  "eliminationWasUndercover": "était un Undercover",
+  "eliminationWasMrWhite": "était Mr White",
+  "eliminationWordSecret": "Son mot reste secret.",
+  "eliminationGuessCta": "Deviner le mot des civils",
+  "guessLastChance": "{name}, dernière chance",
+  "@guessLastChance": {
+    "placeholders": {"name": {"type": "String"}}
+  },
+  "guessPrompt": "Quel est le mot des civils ? Si tu trouves, tu gagnes la partie.",
+  "guessFieldHint": "Ta proposition",
+  "guessSubmit": "Valider ma proposition",
+  "guessRight": "Trouvé !",
+  "guessWrong": "Raté !",
+  "guessWordWas": "Le mot des civils était bien",
+  "guessWinner": "{name} remporte la partie.",
+  "@guessWinner": {
+    "placeholders": {"name": {"type": "String"}}
+  },
+  "guessLost": "Le mot des civils reste secret.\n{name} est éliminé.",
+  "@guessLost": {
+    "placeholders": {"name": {"type": "String"}}
+  },
+
+  "resultTitle": "FIN DE PARTIE",
+  "winCivilians": "Les civils gagnent !",
+  "winMrWhite": "Mr White gagne !",
+  "winUndercoverAndMrWhite": "Undercover & Mr White gagnent !",
+  "winUndercovers": "Les undercover gagnent !",
+  "winCiviliansSubtitle": "Tous les imposteurs ont été démasqués.",
+  "winMrWhiteSubtitle": "Il a deviné le mot des civils après son élimination.",
+  "winImpostorsSubtitle": "Il ne reste plus qu'un seul civil face à eux.",
+  "wordCivilians": "Mot des civils",
+  "wordUndercover": "Mot des undercover",
+  "actionReplay": "Rejouer",
+  "actionHome": "Retour à l'accueil",
+
+  "quitTitle": "Quitter la partie ?",
+  "quitBody": "La partie en cours sera perdue.",
+  "actionQuit": "Quitter",
+  "actionContinue": "Continuer",
+  "actionCancel": "Annuler",
+  "actionEliminate": "Éliminer"
+}

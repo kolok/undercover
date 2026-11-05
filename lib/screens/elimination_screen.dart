@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../game/game_controller.dart';
+import '../l10n/l10n.dart';
 import '../models/player.dart';
 import '../theme.dart';
 
@@ -46,18 +47,22 @@ class _EliminationScreenState extends State<EliminationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return PopScope(
       canPop: false,
       child: Scaffold(
-        appBar: AppBar(title: const Text('ÉLIMINATION'), automaticallyImplyLeading: false),
+        appBar: AppBar(
+          title: Text(l10n.eliminationTitle),
+          automaticallyImplyLeading: false,
+        ),
         body: AppBackground(
           child: SafeArea(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: switch (_step) {
-                _Step.reveal => _buildReveal(),
-                _Step.guess => _buildGuess(),
-                _Step.guessResult => _buildGuessResult(),
+                _Step.reveal => _buildReveal(l10n),
+                _Step.guess => _buildGuess(l10n),
+                _Step.guessResult => _buildGuessResult(l10n),
               },
             ),
           ),
@@ -66,7 +71,7 @@ class _EliminationScreenState extends State<EliminationScreen> {
     );
   }
 
-  Widget _buildReveal() {
+  Widget _buildReveal(AppLocalizations l10n) {
     final color = roleColor(_player.role);
     return Column(
       children: [
@@ -82,37 +87,44 @@ class _EliminationScreenState extends State<EliminationScreen> {
         ),
         const SizedBox(height: 24),
         Text(
-          _player.displayName,
+          _player.displayName(l10n),
+          textAlign: TextAlign.center,
           style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: 8),
         Text(
-          'était ${_player.role == Role.mrWhite ? '' : 'un '}${_player.role.label}',
+          switch (_player.role) {
+            Role.civilian => l10n.eliminationWasCivilian,
+            Role.undercover => l10n.eliminationWasUndercover,
+            Role.mrWhite => l10n.eliminationWasMrWhite,
+          },
+          textAlign: TextAlign.center,
           style: TextStyle(
               fontSize: 30, fontWeight: FontWeight.w900, color: color),
         ),
         const SizedBox(height: 16),
-        const Text(
-          'Son mot reste secret.',
-          style: TextStyle(color: AppColors.muted),
+        Text(
+          l10n.eliminationWordSecret,
+          textAlign: TextAlign.center,
+          style: const TextStyle(color: AppColors.muted),
         ),
         const Spacer(),
         if (_player.role == Role.mrWhite)
           FilledButton(
             onPressed: () => setState(() => _step = _Step.guess),
-            child: const Text('Deviner le mot des civils'),
+            child: Text(l10n.eliminationGuessCta),
           )
         else
           FilledButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Continuer'),
+            child: Text(l10n.actionContinue),
           ),
         const SizedBox(height: 20),
       ],
     );
   }
 
-  Widget _buildGuess() {
+  Widget _buildGuess(AppLocalizations l10n) {
     return Column(
       children: [
         Expanded(
@@ -124,16 +136,16 @@ class _EliminationScreenState extends State<EliminationScreen> {
                     size: 64, color: AppColors.mrWhite),
                 const SizedBox(height: 20),
                 Text(
-                  '${_player.displayName}, dernière chance',
+                  l10n.guessLastChance(_player.displayName(l10n)),
                   style:
                       const TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 10),
-                const Text(
-                  'Quel est le mot des civils ? Si tu trouves, tu gagnes la partie.',
+                Text(
+                  l10n.guessPrompt,
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: AppColors.muted, height: 1.5),
+                  style: const TextStyle(color: AppColors.muted, height: 1.5),
                 ),
                 const SizedBox(height: 24),
                 TextField(
@@ -143,7 +155,8 @@ class _EliminationScreenState extends State<EliminationScreen> {
                   textInputAction: TextInputAction.done,
                   style:
                       const TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
-                  decoration: const InputDecoration(hintText: 'Ta proposition'),
+                  decoration:
+                      InputDecoration(hintText: l10n.guessFieldHint),
                   onSubmitted: (_) => _submitGuess(),
                 ),
                 const SizedBox(height: 24),
@@ -153,14 +166,14 @@ class _EliminationScreenState extends State<EliminationScreen> {
         ),
         FilledButton(
           onPressed: _submitGuess,
-          child: const Text('Valider ma proposition'),
+          child: Text(l10n.guessSubmit),
         ),
         const SizedBox(height: 20),
       ],
     );
   }
 
-  Widget _buildGuessResult() {
+  Widget _buildGuessResult(AppLocalizations l10n) {
     final color = _guessedRight ? AppColors.civilian : AppColors.undercover;
     return Column(
       children: [
@@ -169,14 +182,16 @@ class _EliminationScreenState extends State<EliminationScreen> {
             size: 72, color: color),
         const SizedBox(height: 24),
         Text(
-          _guessedRight ? 'Trouvé !' : 'Raté !',
+          _guessedRight ? l10n.guessRight : l10n.guessWrong,
+          textAlign: TextAlign.center,
           style: TextStyle(
               fontSize: 32, fontWeight: FontWeight.w900, color: color),
         ),
         const SizedBox(height: 16),
         if (_guessedRight) ...[
-          const Text('Le mot des civils était bien',
-              style: TextStyle(color: AppColors.muted)),
+          Text(l10n.guessWordWas,
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: AppColors.muted)),
           const SizedBox(height: 8),
           Text(
             widget.controller.words.civilian,
@@ -186,20 +201,19 @@ class _EliminationScreenState extends State<EliminationScreen> {
                 color: AppColors.primary),
           ),
           const SizedBox(height: 12),
-          Text('${_player.displayName} remporte la partie.',
+          Text(l10n.guessWinner(_player.displayName(l10n)),
               textAlign: TextAlign.center,
               style: const TextStyle(color: AppColors.muted)),
         ] else
           Text(
-            'Le mot des civils reste secret.\n'
-            '${_player.displayName} est éliminé.',
+            l10n.guessLost(_player.displayName(l10n)),
             textAlign: TextAlign.center,
             style: const TextStyle(color: AppColors.muted, height: 1.5),
           ),
         const Spacer(),
         FilledButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Continuer'),
+          child: Text(l10n.actionContinue),
         ),
         const SizedBox(height: 20),
       ],

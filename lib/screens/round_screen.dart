@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../game/game_controller.dart';
+import '../l10n/l10n.dart';
 import '../models/player.dart';
 import '../theme.dart';
 import '../widgets/game_heading.dart';
@@ -23,24 +24,25 @@ class _RoundScreenState extends State<RoundScreen> {
   GameController get _game => widget.controller;
 
   Future<void> _confirmElimination(Player player) async {
+    final l10n = context.l10n;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: AppColors.surface,
-        title: Text('Éliminer ${player.displayName} ?'),
-        content: const Text(
-          'Son rôle sera révélé, mais pas son mot.',
-          style: TextStyle(color: AppColors.muted),
+        title: Text(l10n.eliminateConfirmTitle(player.displayName(l10n))),
+        content: Text(
+          l10n.eliminateConfirmBody,
+          style: const TextStyle(color: AppColors.muted),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Annuler'),
+            child: Text(l10n.actionCancel),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Éliminer',
-                style: TextStyle(color: AppColors.undercover)),
+            child: Text(l10n.actionEliminate,
+                style: const TextStyle(color: AppColors.undercover)),
           ),
         ],
       ),
@@ -69,28 +71,29 @@ class _RoundScreenState extends State<RoundScreen> {
   Widget build(BuildContext context) {
     return QuitGuard(
       child: Scaffold(
-        appBar: AppBar(title: const Text('TOUR DE TABLE')),
+        appBar: AppBar(title: Text(context.l10n.roundTitle)),
         body: AppBackground(
           child: SafeArea(
             child: ListenableBuilder(
               listenable: _game,
               builder: (context, _) {
+                final l10n = context.l10n;
                 final voting = _game.phase == GamePhase.voting;
                 final order = _game.speakingOrder;
-                final starter = _game.firstSpeaker?.displayName ?? '';
+                final starter = _game.firstSpeaker?.displayName(l10n) ?? '';
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
                     children: [
                       GameHeading(
                         instruction: voting
-                            ? 'Qui est éliminé ?'
-                            : 'Manche ${_game.roundNumber}',
+                            ? l10n.roundVoteQuestion
+                            : l10n.roundNumber(_game.roundNumber),
                         highlight: starter,
                         subtitle: voting
-                            ? 'Après le vote, touchez la carte du joueur éliminé.'
-                            : '${GameHeading.namePlaceholder} commence, puis '
-                                'chacun donne son indice dans l\'ordre.',
+                            ? l10n.roundVoteHint
+                            : l10n.roundSpeakingHint(
+                                GameHeading.namePlaceholder),
                       ),
                       const SizedBox(height: 16),
                       Expanded(
@@ -120,7 +123,7 @@ class _RoundScreenState extends State<RoundScreen> {
                       if (!voting)
                         FilledButton(
                           onPressed: _game.startVote,
-                          child: const Text('Finir le tour'),
+                          child: Text(l10n.roundFinish),
                         ),
                       if (voting) _EliminatedRecap(controller: _game),
                       const SizedBox(height: 20),
@@ -144,6 +147,7 @@ class _EliminatedRecap extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final eliminated = controller.cards.where((p) => !p.isAlive).toList();
     if (eliminated.isEmpty) return const SizedBox.shrink();
     return Wrap(
@@ -159,7 +163,7 @@ class _EliminatedRecap extends StatelessWidget {
               borderRadius: BorderRadius.circular(30),
             ),
             child: Text(
-              '${player.displayName} · ${player.role.label}',
+              '${player.displayName(l10n)} · ${player.role.label(l10n)}',
               style: TextStyle(fontSize: 12, color: roleColor(player.role)),
             ),
           ),

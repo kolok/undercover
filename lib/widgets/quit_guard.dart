@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/l10n.dart';
 import '../theme.dart';
 
 /// Demande confirmation avant de quitter une partie en cours.
@@ -25,24 +26,25 @@ class QuitGuard extends StatelessWidget {
 }
 
 Future<bool> confirmQuit(BuildContext context) async {
+  final l10n = context.l10n;
   final quit = await showDialog<bool>(
     context: context,
     builder: (context) => AlertDialog(
       backgroundColor: AppColors.surface,
-      title: const Text('Quitter la partie ?'),
-      content: const Text(
-        'La partie en cours sera perdue.',
-        style: TextStyle(color: AppColors.muted),
+      title: Text(l10n.quitTitle),
+      content: Text(
+        l10n.quitBody,
+        style: const TextStyle(color: AppColors.muted),
       ),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),
-          child: const Text('Continuer'),
+          child: Text(l10n.actionContinue),
         ),
         TextButton(
           onPressed: () => Navigator.of(context).pop(true),
-          child: const Text('Quitter',
-              style: TextStyle(color: AppColors.undercover)),
+          child: Text(l10n.actionQuit,
+              style: const TextStyle(color: AppColors.undercover)),
         ),
       ],
     ),

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:undercover/game/game_controller.dart';
+import 'package:undercover/l10n/l10n.dart';
 import 'package:undercover/models/player.dart';
 import 'package:undercover/models/word_pair.dart';
 import 'package:undercover/screens/distribution_screen.dart';
@@ -86,6 +87,9 @@ void main() {
       MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: _storeTheme(),
+        locale: const Locale('fr'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         home: home,
       ),
     );

@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 
-import '../data/word_pairs.dart';
 import '../models/player.dart';
 import '../models/word_pair.dart';
 
@@ -71,22 +70,34 @@ class GameSettings {
 
 /// Contient l'état d'une partie et toutes les règles associées.
 class GameController extends ChangeNotifier {
+  /// [wordPairs] est la liste de mots de la langue courante, chargée par
+  /// [WordBank].
+  ///
   /// [roster] reprend les joueurs d'une partie précédente : l'ordre de passage
   /// est conservé, seul le premier à choisir une carte est tiré au sort.
+  ///
+  /// [defaultPlayerName] fournit le nom proposé à un joueur qui n'en saisit
+  /// pas ; l'application y branche la traduction en cours.
   GameController(
     this.settings, {
+    required this.wordPairs,
     Random? random,
-    List<WordPair>? wordPairs,
     List<String> roster = const [],
+    String Function(int number)? defaultPlayerName,
   })  : _random = random ?? Random(),
-        _wordPairs = wordPairs ?? kWordPairs {
+        _defaultPlayerName = defaultPlayerName ?? _englishPlayerName {
     _deal();
     _rotatedRoster = _rotate(roster);
   }
 
+  static String _englishPlayerName(int number) => 'Player $number';
+
   final GameSettings settings;
+  /// La banque de mots dans laquelle la paire de la partie est tirée.
+  final List<WordPair> wordPairs;
+
   final Random _random;
-  final List<WordPair> _wordPairs;
+  final String Function(int number) _defaultPlayerName;
 
   /// Noms imposés, dans l'ordre où l'application appelle les joueurs.
   /// Vide quand l'équipe n'est pas connue à l'avance.
@@ -141,7 +152,7 @@ class GameController extends ChangeNotifier {
 
   /// Distribue les rôles au hasard sur les cartes et tire une paire de mots.
   void _deal() {
-    _words = _wordPairs[_random.nextInt(_wordPairs.length)];
+    _words = wordPairs[_random.nextInt(wordPairs.length)];
     final roles = <Role>[
       ...List.filled(settings.undercoverCount, Role.undercover),
       ...List.filled(settings.mrWhiteCount, Role.mrWhite),
@@ -189,10 +200,10 @@ class GameController extends ChangeNotifier {
   /// sautant les numéros qu'un joueur se serait déjà attribués.
   String get suggestedName {
     var number = takenCardCount + 1;
-    while (isNameTaken('Joueur $number')) {
+    while (isNameTaken(_defaultPlayerName(number))) {
       number++;
     }
-    return 'Joueur $number';
+    return _defaultPlayerName(number);
   }
 
   /// Démarre le premier tour de table une fois toutes les cartes distribuées.
@@ -314,11 +325,14 @@ class GameController extends ChangeNotifier {
   }
 
   /// Comparaison tolérante : casse, accents, ponctuation et pluriel ignorés.
+  ///
+  /// Les caractères couverts vont au-delà du français, pour que la devinette
+  /// reste tolérante dans toutes les langues proposées.
   static String _normalize(String value) {
-    const accents = 'àáâãäåçèéêëìíîïñòóôõöùúûüýÿœæ';
+    const accents = 'àáâãäåçèéêëìíîïñòóôõöùúûüýÿœæß';
     const plain = ['a', 'a', 'a', 'a', 'a', 'a', 'c', 'e', 'e', 'e', 'e', 'i',
         'i', 'i', 'i', 'n', 'o', 'o', 'o', 'o', 'o', 'u', 'u', 'u', 'u', 'y',
-        'y', 'oe', 'ae'];
+        'y', 'oe', 'ae', 'ss'];
     final buffer = StringBuffer();
     for (final rune in value.toLowerCase().runes) {
       final char = String.fromCharCode(rune);
