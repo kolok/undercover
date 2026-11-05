@@ -47,8 +47,9 @@ class GameSettings {
   GameSettings normalized() {
     final players = playerCount.clamp(minPlayers, maxPlayers);
     final maxImpostors = maxImpostorsFor(players);
-    final undercover =
-        undercoverCount.clamp(1, min(maxUndercover, maxImpostors)).toInt();
+    final undercover = undercoverCount
+        .clamp(1, min(maxUndercover, maxImpostors))
+        .toInt();
     final mrWhite = mrWhiteCount
         .clamp(0, min(maxMrWhite, maxImpostors - undercover))
         .toInt();
@@ -59,7 +60,11 @@ class GameSettings {
     );
   }
 
-  GameSettings copyWith({int? playerCount, int? undercoverCount, int? mrWhiteCount}) {
+  GameSettings copyWith({
+    int? playerCount,
+    int? undercoverCount,
+    int? mrWhiteCount,
+  }) {
     return GameSettings(
       playerCount: playerCount ?? this.playerCount,
       undercoverCount: undercoverCount ?? this.undercoverCount,
@@ -84,8 +89,8 @@ class GameController extends ChangeNotifier {
     Random? random,
     List<String> roster = const [],
     String Function(int number)? defaultPlayerName,
-  })  : _random = random ?? Random(),
-        _defaultPlayerName = defaultPlayerName ?? _englishPlayerName {
+  }) : _random = random ?? Random(),
+       _defaultPlayerName = defaultPlayerName ?? _englishPlayerName {
     _deal();
     _rotatedRoster = _rotate(roster);
   }
@@ -93,6 +98,7 @@ class GameController extends ChangeNotifier {
   static String _englishPlayerName(int number) => 'Player $number';
 
   final GameSettings settings;
+
   /// La banque de mots dans laquelle la paire de la partie est tirée.
   final List<WordPair> wordPairs;
 
@@ -139,16 +145,18 @@ class GameController extends ChangeNotifier {
   bool get hasFixedOrder => _rotatedRoster.isNotEmpty;
 
   /// Joueur appelé à choisir une carte, `null` si chacun se présente librement.
-  String? get nextPlayerName =>
-      hasFixedOrder && !isDistributionComplete ? _rotatedRoster[takenCardCount] : null;
+  String? get nextPlayerName => hasFixedOrder && !isDistributionComplete
+      ? _rotatedRoster[takenCardCount]
+      : null;
 
   /// L'équipe de la partie en cours, dans l'ordre de passage : sert à relancer
   /// une partie avec les mêmes joueurs.
   List<String> get playerNames => [
-        for (final p in _cards.where((p) => p.isTaken).toList()
+    for (final p
+        in _cards.where((p) => p.isTaken).toList()
           ..sort((a, b) => a.pickOrder!.compareTo(b.pickOrder!)))
-          p.name!,
-      ];
+      p.name!,
+  ];
 
   /// Distribue les rôles au hasard sur les cartes et tire une paire de mots.
   void _deal() {
@@ -165,14 +173,16 @@ class GameController extends ChangeNotifier {
 
   /// Le mot à afficher au joueur ; `null` pour Mr White qui n'en a pas.
   String? secretWordFor(Player player) => switch (player.role) {
-        Role.civilian => _words.civilian,
-        Role.undercover => _words.undercover,
-        Role.mrWhite => null,
-      };
+    Role.civilian => _words.civilian,
+    Role.undercover => _words.undercover,
+    Role.mrWhite => null,
+  };
 
   /// Noms déjà utilisés par les joueurs ayant pris une carte.
-  List<String> get takenNames =>
-      [for (final p in _cards) if (p.isTaken) p.name!];
+  List<String> get takenNames => [
+    for (final p in _cards)
+      if (p.isTaken) p.name!,
+  ];
 
   /// Deux joueurs ne peuvent pas porter le même nom (casse ignorée).
   bool isNameTaken(String name) {
@@ -217,7 +227,8 @@ class GameController extends ChangeNotifier {
   /// Ordre de passage : ordre de sélection des cartes, à partir du premier
   /// joueur désigné par l'application (jamais un Mr White).
   List<Player> get speakingOrder {
-    final alive = alivePlayers..sort((a, b) => a.pickOrder!.compareTo(b.pickOrder!));
+    final alive = alivePlayers
+      ..sort((a, b) => a.pickOrder!.compareTo(b.pickOrder!));
     if (alive.isEmpty) return alive;
     final start = alive.indexWhere((p) => p.cardId == _firstSpeakerCardId);
     if (start <= 0) return alive;
@@ -228,8 +239,9 @@ class GameController extends ChangeNotifier {
       speakingOrder.isEmpty ? null : speakingOrder.first;
 
   void _pickFirstSpeaker() {
-    final candidates =
-        alivePlayers.where((p) => p.role != Role.mrWhite).toList();
+    final candidates = alivePlayers
+        .where((p) => p.role != Role.mrWhite)
+        .toList();
     final pool = candidates.isEmpty ? alivePlayers : candidates;
     _firstSpeakerCardId = pool[_random.nextInt(pool.length)].cardId;
   }
@@ -330,9 +342,38 @@ class GameController extends ChangeNotifier {
   /// reste tolérante dans toutes les langues proposées.
   static String _normalize(String value) {
     const accents = 'àáâãäåçèéêëìíîïñòóôõöùúûüýÿœæß';
-    const plain = ['a', 'a', 'a', 'a', 'a', 'a', 'c', 'e', 'e', 'e', 'e', 'i',
-        'i', 'i', 'i', 'n', 'o', 'o', 'o', 'o', 'o', 'u', 'u', 'u', 'u', 'y',
-        'y', 'oe', 'ae', 'ss'];
+    const plain = [
+      'a',
+      'a',
+      'a',
+      'a',
+      'a',
+      'a',
+      'c',
+      'e',
+      'e',
+      'e',
+      'e',
+      'i',
+      'i',
+      'i',
+      'i',
+      'n',
+      'o',
+      'o',
+      'o',
+      'o',
+      'o',
+      'u',
+      'u',
+      'u',
+      'u',
+      'y',
+      'y',
+      'oe',
+      'ae',
+      'ss',
+    ];
     final buffer = StringBuffer();
     for (final rune in value.toLowerCase().runes) {
       final char = String.fromCharCode(rune);

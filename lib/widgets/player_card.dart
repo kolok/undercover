@@ -30,7 +30,9 @@ class PlayerCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final eliminated = !player.isAlive;
     final revealedRole = player.isRevealed ? player.role : null;
-    final accent = revealedRole != null ? roleColor(revealedRole) : AppColors.primary;
+    final accent = revealedRole != null
+        ? roleColor(revealedRole)
+        : AppColors.primary;
 
     return AnimatedOpacity(
       duration: const Duration(milliseconds: 250),
@@ -47,7 +49,9 @@ class PlayerCard extends StatelessWidget {
               border: Border.all(
                 color: highlighted
                     ? AppColors.primary
-                    : accent.withValues(alpha: revealedRole != null ? 0.7 : 0.15),
+                    : accent.withValues(
+                        alpha: revealedRole != null ? 0.7 : 0.15,
+                      ),
                 width: highlighted ? 2.5 : 1.5,
               ),
             ),
@@ -71,15 +75,20 @@ class PlayerCard extends StatelessWidget {
                       child: Text(
                         orderLabel!,
                         style: const TextStyle(
-                            fontSize: 12, fontWeight: FontWeight.w800),
+                          fontSize: 12,
+                          fontWeight: FontWeight.w800,
+                        ),
                       ),
                     ),
                   ),
                 if (eliminated)
                   const Align(
                     alignment: Alignment.topRight,
-                    child: Icon(Icons.close_rounded,
-                        color: AppColors.undercover, size: 20),
+                    child: Icon(
+                      Icons.close_rounded,
+                      color: AppColors.undercover,
+                      size: 20,
+                    ),
                   ),
               ],
             ),
@@ -95,11 +104,16 @@ class PlayerCard extends StatelessWidget {
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.question_mark_rounded,
-              size: 30, color: AppColors.primary),
+          const Icon(
+            Icons.question_mark_rounded,
+            size: 30,
+            color: AppColors.primary,
+          ),
           const SizedBox(height: 6),
-          Text(l10n.cardFree,
-              style: const TextStyle(color: AppColors.muted, fontSize: 12)),
+          Text(
+            l10n.cardFree,
+            style: const TextStyle(color: AppColors.muted, fontSize: 12),
+          ),
         ],
       );
     }
@@ -116,7 +130,9 @@ class PlayerCard extends StatelessWidget {
                   Role.mrWhite => Icons.help_outline_rounded,
                 },
           size: 28,
-          color: revealedRole == null ? Colors.white70 : roleColor(revealedRole),
+          color: revealedRole == null
+              ? Colors.white70
+              : roleColor(revealedRole),
         ),
         const SizedBox(height: 6),
         Padding(
@@ -133,9 +149,10 @@ class PlayerCard extends StatelessWidget {
           Text(
             revealedRole.label(l10n),
             style: TextStyle(
-                fontSize: 11,
-                color: roleColor(revealedRole),
-                fontWeight: FontWeight.w600),
+              fontSize: 11,
+              color: roleColor(revealedRole),
+              fontWeight: FontWeight.w600,
+            ),
           ),
       ],
     );

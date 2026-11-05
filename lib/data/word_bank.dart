@@ -24,7 +24,9 @@ class WordBank {
   static const String fallbackLanguage = 'en';
 
   static String _resolve(String languageCode) =>
-      supportedLanguages.contains(languageCode) ? languageCode : fallbackLanguage;
+      supportedLanguages.contains(languageCode)
+      ? languageCode
+      : fallbackLanguage;
 
   /// Les paires de mots de [languageCode], repliées sur l'anglais si cette
   /// langue n'a pas de liste.

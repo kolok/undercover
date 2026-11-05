@@ -41,8 +41,10 @@ class _RoundScreenState extends State<RoundScreen> {
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: Text(l10n.actionEliminate,
-                style: const TextStyle(color: AppColors.undercover)),
+            child: Text(
+              l10n.actionEliminate,
+              style: const TextStyle(color: AppColors.undercover),
+            ),
           ),
         ],
       ),
@@ -93,7 +95,8 @@ class _RoundScreenState extends State<RoundScreen> {
                         subtitle: voting
                             ? l10n.roundVoteHint
                             : l10n.roundSpeakingHint(
-                                GameHeading.namePlaceholder),
+                                GameHeading.namePlaceholder,
+                              ),
                       ),
                       const SizedBox(height: 16),
                       Expanded(
@@ -101,11 +104,11 @@ class _RoundScreenState extends State<RoundScreen> {
                           padding: const EdgeInsets.only(bottom: 12),
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 3,
-                            crossAxisSpacing: 12,
-                            mainAxisSpacing: 12,
-                            childAspectRatio: 0.78,
-                          ),
+                                crossAxisCount: 3,
+                                crossAxisSpacing: 12,
+                                mainAxisSpacing: 12,
+                                childAspectRatio: 0.78,
+                              ),
                           itemCount: order.length,
                           itemBuilder: (context, index) {
                             final player = order[index];

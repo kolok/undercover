@@ -20,7 +20,8 @@ class SetupScreen extends StatefulWidget {
 }
 
 class _SetupScreenState extends State<SetupScreen> {
-  late GameSettings _settings = widget.initialSettings ??
+  late GameSettings _settings =
+      widget.initialSettings ??
       const GameSettings(playerCount: 6, undercoverCount: 1, mrWhiteCount: 1);
 
   int get _maxImpostors => GameSettings.maxImpostorsFor(_settings.playerCount);
@@ -107,16 +108,15 @@ class _SetupScreenState extends State<SetupScreen> {
                         l10n.setupHint,
                         textAlign: TextAlign.center,
                         style: const TextStyle(
-                            color: AppColors.muted, fontSize: 13),
+                          color: AppColors.muted,
+                          fontSize: 13,
+                        ),
                       ),
                       const SizedBox(height: 24),
                     ],
                   ),
                 ),
-                FilledButton(
-                  onPressed: _play,
-                  child: Text(l10n.setupPlay),
-                ),
+                FilledButton(onPressed: _play, child: Text(l10n.setupPlay)),
                 const SizedBox(height: 20),
               ],
             ),
@@ -162,12 +162,17 @@ class _CounterTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(label,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.w700, fontSize: 16)),
-                Text(context.l10n.setupRange(min, max),
-                    style:
-                        const TextStyle(color: AppColors.muted, fontSize: 12)),
+                Text(
+                  label,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 16,
+                  ),
+                ),
+                Text(
+                  context.l10n.setupRange(min, max),
+                  style: const TextStyle(color: AppColors.muted, fontSize: 12),
+                ),
               ],
             ),
           ),
@@ -210,7 +215,9 @@ class _RoundIconButton extends StatelessWidget {
       onPressed: onPressed,
       icon: Icon(icon),
       style: IconButton.styleFrom(
-        backgroundColor: AppColors.surfaceHigh.withValues(alpha: enabled ? 1 : 0.4),
+        backgroundColor: AppColors.surfaceHigh.withValues(
+          alpha: enabled ? 1 : 0.4,
+        ),
         foregroundColor: enabled ? Colors.white : AppColors.muted,
       ),
     );
@@ -241,9 +248,13 @@ class _CivilianSummary extends StatelessWidget {
               color: AppColors.civilian,
             ),
           ),
-          Text(context.l10n.setupCivilians,
-              style: const TextStyle(
-                  color: AppColors.civilian, letterSpacing: 1.5)),
+          Text(
+            context.l10n.setupCivilians,
+            style: const TextStyle(
+              color: AppColors.civilian,
+              letterSpacing: 1.5,
+            ),
+          ),
         ],
       ),
     );

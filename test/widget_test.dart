@@ -8,8 +8,9 @@ UndercoverApp frenchApp() =>
     UndercoverApp(locales: LocaleController(initialLocale: const Locale('fr')));
 
 void main() {
-  testWidgets('on peut aller de l\'accueil à la distribution des cartes',
-      (tester) async {
+  testWidgets('on peut aller de l\'accueil à la distribution des cartes', (
+    tester,
+  ) async {
     await tester.pumpWidget(frenchApp());
 
     expect(find.text('UNDERCOVER'), findsOneWidget);
@@ -20,7 +21,9 @@ void main() {
 
     // Configuration par défaut : 6 joueurs, 1 undercover, 1 Mr White.
     expect(find.text('4'), findsOneWidget); // civils
-    await tester.tap(find.widgetWithIcon(IconButton, Icons.remove_rounded).first);
+    await tester.tap(
+      find.widgetWithIcon(IconButton, Icons.remove_rounded).first,
+    );
     await tester.pumpAndSettle();
     expect(find.text('5'), findsOneWidget); // joueurs
 
@@ -30,8 +33,9 @@ void main() {
     expect(find.text('0 / 5 cartes distribuées'), findsOneWidget);
   });
 
-  testWidgets('un joueur choisit une carte, se nomme et voit son mot',
-      (tester) async {
+  testWidgets('un joueur choisit une carte, se nomme et voit son mot', (
+    tester,
+  ) async {
     await tester.pumpWidget(frenchApp());
     await tester.tap(find.text('Démarrer la partie'));
     await tester.pumpAndSettle();

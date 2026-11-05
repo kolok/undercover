@@ -13,10 +13,10 @@ extension L10nContext on BuildContext {
 /// Libellé traduit d'un rôle, affiché lors des révélations.
 extension RoleLabel on Role {
   String label(AppLocalizations l10n) => switch (this) {
-        Role.civilian => l10n.roleCivilian,
-        Role.undercover => l10n.roleUndercover,
-        Role.mrWhite => l10n.roleMrWhite,
-      };
+    Role.civilian => l10n.roleCivilian,
+    Role.undercover => l10n.roleUndercover,
+    Role.mrWhite => l10n.roleMrWhite,
+  };
 }
 
 /// Nom affiché d'un joueur, avec un repli sur le numéro de sa carte tant

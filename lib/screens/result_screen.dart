@@ -14,22 +14,22 @@ class ResultScreen extends StatelessWidget {
   final GameController controller;
 
   Color get _winnerColor => switch (controller.winner) {
-        Winner.civilians => AppColors.civilian,
-        Winner.mrWhiteGuess => AppColors.mrWhite,
-        _ => AppColors.undercover,
-      };
+    Winner.civilians => AppColors.civilian,
+    Winner.mrWhiteGuess => AppColors.mrWhite,
+    _ => AppColors.undercover,
+  };
 
   String _title(AppLocalizations l10n) => switch (controller.winner) {
-        Winner.civilians => l10n.winCivilians,
-        Winner.mrWhiteGuess => l10n.winMrWhite,
-        _ => _survivingImpostorsLabel(l10n),
-      };
+    Winner.civilians => l10n.winCivilians,
+    Winner.mrWhiteGuess => l10n.winMrWhite,
+    _ => _survivingImpostorsLabel(l10n),
+  };
 
   String _subtitle(AppLocalizations l10n) => switch (controller.winner) {
-        Winner.civilians => l10n.winCiviliansSubtitle,
-        Winner.mrWhiteGuess => l10n.winMrWhiteSubtitle,
-        _ => l10n.winImpostorsSubtitle,
-      };
+    Winner.civilians => l10n.winCiviliansSubtitle,
+    Winner.mrWhiteGuess => l10n.winMrWhiteSubtitle,
+    _ => l10n.winImpostorsSubtitle,
+  };
 
   String _survivingImpostorsLabel(AppLocalizations l10n) {
     final survivors = controller.alivePlayers.where((p) => p.isImpostor);
@@ -84,8 +84,11 @@ class ResultScreen extends StatelessWidget {
                   child: ListView(
                     children: [
                       const SizedBox(height: 8),
-                      Icon(Icons.emoji_events_rounded,
-                          size: 72, color: _winnerColor),
+                      Icon(
+                        Icons.emoji_events_rounded,
+                        size: 72,
+                        color: _winnerColor,
+                      ),
                       const SizedBox(height: 16),
                       Text(
                         _title(l10n),
@@ -169,9 +172,11 @@ class _WordTile extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Text(label,
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 12, color: color)),
+          Text(
+            label,
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 12, color: color),
+          ),
           const SizedBox(height: 6),
           Text(
             word,
@@ -222,8 +227,10 @@ class _PlayerRow extends StatelessWidget {
               ),
             ),
           ),
-          Text(player.role.label(l10n),
-              style: TextStyle(color: color, fontSize: 13)),
+          Text(
+            player.role.label(l10n),
+            style: TextStyle(color: color, fontSize: 13),
+          ),
         ],
       ),
     );

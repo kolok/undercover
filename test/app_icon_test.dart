@@ -40,9 +40,7 @@ void main() {
     // d'autant pour occuper au final ~55 % de l'icône, dans la zone sûre.
     await pumpIconSurface(
       tester,
-      const Center(
-        child: TheaterMaskLogo(color: AppColors.primary, size: 830),
-      ),
+      const Center(child: TheaterMaskLogo(color: AppColors.primary, size: 830)),
     );
     await expectLater(
       find.byType(Center),

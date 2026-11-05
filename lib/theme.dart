@@ -18,10 +18,7 @@ ThemeData buildAppTheme() {
   final scheme = ColorScheme.fromSeed(
     seedColor: AppColors.primary,
     brightness: Brightness.dark,
-  ).copyWith(
-    surface: AppColors.background,
-    primary: AppColors.primary,
-  );
+  ).copyWith(surface: AppColors.background, primary: AppColors.primary);
 
   return ThemeData(
     useMaterial3: true,
@@ -66,10 +63,10 @@ ThemeData buildAppTheme() {
 
 /// Couleur associée à chaque rôle, pour les révélations.
 Color roleColor(Role role) => switch (role) {
-      Role.civilian => AppColors.civilian,
-      Role.undercover => AppColors.undercover,
-      Role.mrWhite => AppColors.mrWhite,
-    };
+  Role.civilian => AppColors.civilian,
+  Role.undercover => AppColors.undercover,
+  Role.mrWhite => AppColors.mrWhite,
+};
 
 /// Fond dégradé commun à tous les écrans.
 class AppBackground extends StatelessWidget {

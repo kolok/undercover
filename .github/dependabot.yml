@@ -1,0 +1,16 @@
+# Mises à jour des dépendances pub (Flutter/Dart).
+# https://docs.github.com/en/code-security/dependabot/dependabot-version-updates
+version: 2
+updates:
+  - package-ecosystem: pub
+    directory: /
+    cooldown:
+      default-days: 7
+    schedule:
+      interval: weekly
+      day: friday
+      time: "06:00"
+      timezone: Europe/Paris
+    open-pull-requests-limit: 50
+    labels:
+      - dependencies

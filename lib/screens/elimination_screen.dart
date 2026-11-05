@@ -100,7 +100,10 @@ class _EliminationScreenState extends State<EliminationScreen> {
           },
           textAlign: TextAlign.center,
           style: TextStyle(
-              fontSize: 30, fontWeight: FontWeight.w900, color: color),
+            fontSize: 30,
+            fontWeight: FontWeight.w900,
+            color: color,
+          ),
         ),
         const SizedBox(height: 16),
         Text(
@@ -132,13 +135,18 @@ class _EliminationScreenState extends State<EliminationScreen> {
             child: Column(
               children: [
                 const SizedBox(height: 32),
-                const Icon(Icons.psychology_alt_rounded,
-                    size: 64, color: AppColors.mrWhite),
+                const Icon(
+                  Icons.psychology_alt_rounded,
+                  size: 64,
+                  color: AppColors.mrWhite,
+                ),
                 const SizedBox(height: 20),
                 Text(
                   l10n.guessLastChance(_player.displayName(l10n)),
-                  style:
-                      const TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800,
+                  ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 10),
@@ -153,10 +161,11 @@ class _EliminationScreenState extends State<EliminationScreen> {
                   autofocus: true,
                   textAlign: TextAlign.center,
                   textInputAction: TextInputAction.done,
-                  style:
-                      const TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
-                  decoration:
-                      InputDecoration(hintText: l10n.guessFieldHint),
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w700,
+                  ),
+                  decoration: InputDecoration(hintText: l10n.guessFieldHint),
                   onSubmitted: (_) => _submitGuess(),
                 ),
                 const SizedBox(height: 24),
@@ -164,10 +173,7 @@ class _EliminationScreenState extends State<EliminationScreen> {
             ),
           ),
         ),
-        FilledButton(
-          onPressed: _submitGuess,
-          child: Text(l10n.guessSubmit),
-        ),
+        FilledButton(onPressed: _submitGuess, child: Text(l10n.guessSubmit)),
         const SizedBox(height: 20),
       ],
     );
@@ -178,32 +184,43 @@ class _EliminationScreenState extends State<EliminationScreen> {
     return Column(
       children: [
         const Spacer(),
-        Icon(_guessedRight ? Icons.celebration_rounded : Icons.close_rounded,
-            size: 72, color: color),
+        Icon(
+          _guessedRight ? Icons.celebration_rounded : Icons.close_rounded,
+          size: 72,
+          color: color,
+        ),
         const SizedBox(height: 24),
         Text(
           _guessedRight ? l10n.guessRight : l10n.guessWrong,
           textAlign: TextAlign.center,
           style: TextStyle(
-              fontSize: 32, fontWeight: FontWeight.w900, color: color),
+            fontSize: 32,
+            fontWeight: FontWeight.w900,
+            color: color,
+          ),
         ),
         const SizedBox(height: 16),
         if (_guessedRight) ...[
-          Text(l10n.guessWordWas,
-              textAlign: TextAlign.center,
-              style: const TextStyle(color: AppColors.muted)),
+          Text(
+            l10n.guessWordWas,
+            textAlign: TextAlign.center,
+            style: const TextStyle(color: AppColors.muted),
+          ),
           const SizedBox(height: 8),
           Text(
             widget.controller.words.civilian,
             style: const TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.w900,
-                color: AppColors.primary),
+              fontSize: 30,
+              fontWeight: FontWeight.w900,
+              color: AppColors.primary,
+            ),
           ),
           const SizedBox(height: 12),
-          Text(l10n.guessWinner(_player.displayName(l10n)),
-              textAlign: TextAlign.center,
-              style: const TextStyle(color: AppColors.muted)),
+          Text(
+            l10n.guessWinner(_player.displayName(l10n)),
+            textAlign: TextAlign.center,
+            style: const TextStyle(color: AppColors.muted),
+          ),
         ] else
           Text(
             l10n.guessLost(_player.displayName(l10n)),

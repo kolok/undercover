@@ -21,8 +21,9 @@ class PlayerNameScreen extends StatefulWidget {
 }
 
 class _PlayerNameScreenState extends State<PlayerNameScreen> {
-  late final TextEditingController _controller =
-      TextEditingController(text: widget.suggestedName);
+  late final TextEditingController _controller = TextEditingController(
+    text: widget.suggestedName,
+  );
 
   /// Message d'erreur affiché sous le champ, `null` tant que tout va bien.
   String? _error;
@@ -64,14 +65,19 @@ class _PlayerNameScreenState extends State<PlayerNameScreen> {
                     child: Column(
                       children: [
                         const SizedBox(height: 40),
-                        const Icon(Icons.badge_rounded,
-                            size: 56, color: AppColors.primary),
+                        const Icon(
+                          Icons.badge_rounded,
+                          size: 56,
+                          color: AppColors.primary,
+                        ),
                         const SizedBox(height: 20),
                         Text(
                           l10n.namePrompt,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.w800),
+                            fontSize: 20,
+                            fontWeight: FontWeight.w800,
+                          ),
                         ),
                         const SizedBox(height: 24),
                         TextField(
@@ -82,11 +88,15 @@ class _PlayerNameScreenState extends State<PlayerNameScreen> {
                           textInputAction: TextInputAction.done,
                           maxLength: 14,
                           style: const TextStyle(
-                              fontSize: 22, fontWeight: FontWeight.w700),
+                            fontSize: 22,
+                            fontWeight: FontWeight.w700,
+                          ),
                           decoration: InputDecoration(
                             errorText: _error,
                             errorStyle: const TextStyle(
-                                fontSize: 14, fontWeight: FontWeight.w700),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
                           onChanged: (_) {
                             if (_error != null) setState(() => _error = null);

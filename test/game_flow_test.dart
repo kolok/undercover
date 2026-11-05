@@ -17,12 +17,12 @@ UndercoverApp frenchApp() =>
 
 /// Enveloppe un écran isolé avec les traductions françaises.
 Widget frenchHost(Widget home) => MaterialApp(
-      theme: buildAppTheme(),
-      locale: const Locale('fr'),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      home: home,
-    );
+  theme: buildAppTheme(),
+  locale: const Locale('fr'),
+  localizationsDelegates: AppLocalizations.localizationsDelegates,
+  supportedLocales: AppLocalizations.supportedLocales,
+  home: home,
+);
 
 /// Fait choisir une carte, saisir un nom et découvrir le mot secret.
 Future<void> takeCard(WidgetTester tester, String name) async {
@@ -38,16 +38,18 @@ Future<void> takeCard(WidgetTester tester, String name) async {
 }
 
 void main() {
-  testWidgets('partie complète à 3 joueurs, de l\'accueil au résultat',
-      (tester) async {
+  testWidgets('partie complète à 3 joueurs, de l\'accueil au résultat', (
+    tester,
+  ) async {
     await tester.pumpWidget(frenchApp());
     await tester.tap(find.text('Démarrer la partie'));
     await tester.pumpAndSettle();
 
     // 6 joueurs par défaut : on descend à 3 (1 undercover, 0 Mr White).
     for (var i = 0; i < 3; i++) {
-      await tester
-          .tap(find.widgetWithIcon(IconButton, Icons.remove_rounded).first);
+      await tester.tap(
+        find.widgetWithIcon(IconButton, Icons.remove_rounded).first,
+      );
       await tester.pumpAndSettle();
     }
     await tester.tap(find.text('Jouer'));
@@ -84,7 +86,10 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('0 / 3 cartes distribuées'), findsOneWidget);
     final first = ['Ana', 'Bob', 'Cleo'].firstWhere(
-      (name) => find.text('Au tour de $name de choisir une carte').evaluate().isNotEmpty,
+      (name) => find
+          .text('Au tour de $name de choisir une carte')
+          .evaluate()
+          .isNotEmpty,
     );
 
     // Choisir une carte n'ouvre plus la saisie du nom : il est déjà connu.
@@ -99,8 +104,9 @@ void main() {
     expect(find.text('1 / 3 cartes distribuées'), findsOneWidget);
   });
 
-  testWidgets('Mr White éliminé peut deviner le mot des civils',
-      (tester) async {
+  testWidgets('Mr White éliminé peut deviner le mot des civils', (
+    tester,
+  ) async {
     final game = GameController(
       const GameSettings(playerCount: 6, undercoverCount: 1, mrWhiteCount: 1),
       random: Random(7),
@@ -111,8 +117,7 @@ void main() {
     }
     game.startRoundTable();
     game.startVote();
-    final mrWhite =
-        game.cards.firstWhere((p) => p.role == Role.mrWhite);
+    final mrWhite = game.cards.firstWhere((p) => p.role == Role.mrWhite);
     game.eliminate(mrWhite.cardId);
 
     await tester.pumpWidget(
@@ -138,8 +143,9 @@ void main() {
     await tester.pumpAndSettle();
 
     for (var i = 0; i < 3; i++) {
-      await tester
-          .tap(find.widgetWithIcon(IconButton, Icons.remove_rounded).first);
+      await tester.tap(
+        find.widgetWithIcon(IconButton, Icons.remove_rounded).first,
+      );
       await tester.pumpAndSettle();
     }
     await tester.tap(find.text('Jouer'));
@@ -154,14 +160,23 @@ void main() {
     await tester.tap(find.text('Valider'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Ce nom est déjà pris, trouve-en un autre.'),
-        findsOneWidget);
-    expect(find.text('Valider'), findsOneWidget, reason: 'on reste sur la saisie');
+    expect(
+      find.text('Ce nom est déjà pris, trouve-en un autre.'),
+      findsOneWidget,
+    );
+    expect(
+      find.text('Valider'),
+      findsOneWidget,
+      reason: 'on reste sur la saisie',
+    );
 
     // Un autre nom débloque la validation.
     await tester.enterText(find.byType(TextField), 'Bob');
     await tester.pumpAndSettle();
-    expect(find.text('Ce nom est déjà pris, trouve-en un autre.'), findsNothing);
+    expect(
+      find.text('Ce nom est déjà pris, trouve-en un autre.'),
+      findsNothing,
+    );
     await tester.tap(find.text('Valider'));
     await tester.pumpAndSettle();
     expect(find.text('BOB'), findsOneWidget, reason: 'la carte est attribuée');

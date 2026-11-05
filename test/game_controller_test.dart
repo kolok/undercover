@@ -84,14 +84,11 @@ void main() {
     test('donne le mot correspondant au rôle, rien pour Mr White', () {
       final game = buildGame();
       for (final card in game.cards) {
-        expect(
-          game.secretWordFor(card),
-          switch (card.role) {
-            Role.civilian => 'Citron',
-            Role.undercover => 'Orange',
-            Role.mrWhite => null,
-          },
-        );
+        expect(game.secretWordFor(card), switch (card.role) {
+          Role.civilian => 'Citron',
+          Role.undercover => 'Orange',
+          Role.mrWhite => null,
+        });
       }
     });
 
@@ -112,7 +109,11 @@ void main() {
       final starts = <String>{};
       for (var seed = 0; seed < 30; seed++) {
         final game = GameController(
-          const GameSettings(playerCount: 4, undercoverCount: 1, mrWhiteCount: 0),
+          const GameSettings(
+            playerCount: 4,
+            undercoverCount: 1,
+            mrWhiteCount: 0,
+          ),
           random: Random(seed),
           wordPairs: _pairs,
           roster: roster,
@@ -133,7 +134,11 @@ void main() {
         ]);
         expect(game.nextPlayerName, isNull);
       }
-      expect(starts.length, greaterThan(1), reason: 'le premier est tiré au sort');
+      expect(
+        starts.length,
+        greaterThan(1),
+        reason: 'le premier est tiré au sort',
+      );
     });
 
     test('sans équipe reprise, chacun saisit son nom', () {
@@ -170,7 +175,10 @@ void main() {
       for (var seed = 0; seed < 50; seed++) {
         final game = GameController(
           const GameSettings(
-              playerCount: 5, undercoverCount: 1, mrWhiteCount: 1),
+            playerCount: 5,
+            undercoverCount: 1,
+            mrWhiteCount: 1,
+          ),
           random: Random(seed),
           wordPairs: _pairs,
         );
@@ -210,7 +218,10 @@ void main() {
       for (var seed = 0; seed < 50; seed++) {
         final game = GameController(
           const GameSettings(
-              playerCount: 7, undercoverCount: 1, mrWhiteCount: 1),
+            playerCount: 7,
+            undercoverCount: 1,
+            mrWhiteCount: 1,
+          ),
           random: Random(seed),
           wordPairs: _pairs,
         );
@@ -219,14 +230,17 @@ void main() {
           ..sort((a, b) => a.pickOrder!.compareTo(b.pickOrder!));
         final mrWhiteSeat = seated.indexWhere((p) => p.role == Role.mrWhite);
         // On élimine celui qui précède Mr White dans l'ordre de passage.
-        final victim = seated[(mrWhiteSeat - 1 + seated.length) % seated.length];
+        final victim =
+            seated[(mrWhiteSeat - 1 + seated.length) % seated.length];
         game.startVote();
         game.eliminate(victim.cardId);
         if (game.winner != null) continue;
         game.startNextRound();
         expect(game.firstSpeaker!.role, isNot(Role.mrWhite));
-        expect(game.firstSpeaker!.cardId,
-            seated[(mrWhiteSeat + 1) % seated.length].cardId);
+        expect(
+          game.firstSpeaker!.cardId,
+          seated[(mrWhiteSeat + 1) % seated.length].cardId,
+        );
       }
     });
 
@@ -312,19 +326,23 @@ void main() {
       expect(game.phase, GamePhase.roundTable);
     });
 
-    test('éliminer le dernier imposteur Mr White qui échoue fait gagner les civils',
-        () {
-      final game = buildGame(players: 5, undercover: 1, mrWhite: 1);
-      dealAll(game);
-      game.startVote();
-      game.eliminate(firstWhere(game, (p) => p.role == Role.undercover).cardId);
-      expect(game.winner, isNull);
-      game.startNextRound();
-      game.startVote();
-      game.eliminate(firstWhere(game, (p) => p.role == Role.mrWhite).cardId);
-      expect(game.submitMrWhiteGuess('avion'), isFalse);
-      expect(game.winner, Winner.civilians);
-    });
+    test(
+      'éliminer le dernier imposteur Mr White qui échoue fait gagner les civils',
+      () {
+        final game = buildGame(players: 5, undercover: 1, mrWhite: 1);
+        dealAll(game);
+        game.startVote();
+        game.eliminate(
+          firstWhere(game, (p) => p.role == Role.undercover).cardId,
+        );
+        expect(game.winner, isNull);
+        game.startNextRound();
+        game.startVote();
+        game.eliminate(firstWhere(game, (p) => p.role == Role.mrWhite).cardId);
+        expect(game.submitMrWhiteGuess('avion'), isFalse);
+        expect(game.winner, Winner.civilians);
+      },
+    );
 
     test('la devinette ignore accents, casse et ponctuation', () {
       final game = buildGame(players: 6, undercover: 1, mrWhite: 1);
