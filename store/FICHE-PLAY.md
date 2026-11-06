@@ -8,8 +8,11 @@ Tout ce qui est nécessaire à la fiche est dans ce dossier. Le bundle à envoye
 | Fichier | Usage Play Console |
 | --- | --- |
 | `icon-512.png` | Icône de l'application (512×512) |
-| `feature-graphic.png` | Image de présentation (1024×500) |
-| `01-accueil.png` … `06-victoire.png` | Captures d'écran téléphone (1080×1920) |
+| `<langue>/feature-graphic.png` | Image de présentation (1024×500) |
+| `<langue>/01-accueil.png` … `<langue>/06-victoire.png` | Captures d'écran téléphone (1080×1920) |
+
+`<langue>` vaut `fr`, `en`, `de`, `es` ou `it` : une série par langue traduite, à
+téléverser dans la fiche localisée correspondante. L'icône est commune.
 
 La politique de confidentialité est publiée par GitHub Pages depuis `docs/` :
 <https://kolok.github.io/undercover/>
