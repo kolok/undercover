@@ -6,6 +6,12 @@
   "homeTagline": "One phone, three sides,\none word that does not fit.",
   "homeStart": "Start the game",
   "homeRules": "How to play",
+  "homeAbout": "About",
+
+  "aboutTitle": "ABOUT",
+  "aboutBody": "The apps I make are completely free, with no ads and no data collection.",
+  "aboutSupport": "If you want to help me out, leave a good rating on the store: it's always nice to get one!",
+  "aboutRate": "Rate on the Play Store",
 
   "languageTitle": "Language",
   "languageSystem": "System language",

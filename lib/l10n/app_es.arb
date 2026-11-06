@@ -6,6 +6,12 @@
   "homeTagline": "Un solo móvil, tres bandos,\nuna palabra que no encaja.",
   "homeStart": "Empezar la partida",
   "homeRules": "Reglas del juego",
+  "homeAbout": "Acerca de",
+
+  "aboutTitle": "ACERCA DE",
+  "aboutBody": "Las aplicaciones que creo son totalmente gratuitas, sin publicidad y sin ninguna recopilación de datos.",
+  "aboutSupport": "Si quieres ayudarme, deja una buena valoración en la tienda: ¡siempre hace ilusión!",
+  "aboutRate": "Valorar en Play Store",
 
   "languageTitle": "Idioma",
   "languageSystem": "Idioma del sistema",

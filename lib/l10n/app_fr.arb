@@ -8,6 +8,12 @@
   "homeTagline": "Un seul téléphone, trois camps,\nun seul mot qui ne colle pas.",
   "homeStart": "Démarrer la partie",
   "homeRules": "Règles du jeu",
+  "homeAbout": "À propos",
+
+  "aboutTitle": "À PROPOS",
+  "aboutBody": "Les applications que je crée sont entièrement gratuites, sans publicité et sans aucune collecte de données.",
+  "aboutSupport": "Si tu veux m'aider, laisse une bonne note sur le store : ça fait toujours plaisir !",
+  "aboutRate": "Noter sur le Play Store",
 
   "languageTitle": "Langue",
   "languageSystem": "Langue du système",
