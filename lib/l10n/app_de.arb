@@ -6,6 +6,12 @@
   "homeTagline": "Ein Handy, drei Lager,\nein Wort, das nicht passt.",
   "homeStart": "Spiel starten",
   "homeRules": "Spielregeln",
+  "homeAbout": "Über die App",
+
+  "aboutTitle": "ÜBER DIE APP",
+  "aboutBody": "Die Apps, die ich entwickle, sind komplett kostenlos, ohne Werbung und ohne jede Datenerfassung.",
+  "aboutSupport": "Wenn du mich unterstützen möchtest, gib eine gute Bewertung im Store ab: Darüber freue ich mich immer!",
+  "aboutRate": "Im Play Store bewerten",
 
   "languageTitle": "Sprache",
   "languageSystem": "Systemsprache",

@@ -1,0 +1,43 @@
+#!/usr/bin/env sh
+# Formate lib/ et test/ avec dart format, puis re-stage les fichiers concernés.
+set -e
+cd "$(git rev-parse --show-toplevel)"
+
+# Les GUIs Git (Cursor, Tower…) lancent souvent les hooks avec un PATH minimal :
+# Homebrew (Apple Silicon / Intel) et le répertoire courant du projet.
+PATH="${PATH}:/opt/homebrew/bin:/usr/local/bin:${PWD}/.fvm/flutter_sdk/bin:${PWD}/.fvm/versions/default/bin"
+export PATH
+
+resolve_dart() {
+  if command -v dart >/dev/null 2>&1; then
+    command -v dart
+    return 0
+  fi
+  # Repli : SDK embarqué dans une install Flutter standard (flutter → …/bin/flutter).
+  if command -v flutter >/dev/null 2>&1; then
+    _fb="$(command -v flutter)"
+    _root="$(CDPATH= cd "$(dirname "$_fb")/.." && pwd)"
+    _dart="${_root}/bin/cache/dart-sdk/bin/dart"
+    if [ -x "$_dart" ]; then
+      echo "$_dart"
+      return 0
+    fi
+  fi
+  return 1
+}
+
+if ! DART="$(resolve_dart)"; then
+  echo "pre-commit: « dart » introuvable (PATH trop restrictif ou Flutter non installé)." >&2
+  echo "pre-commit: ouvrez un terminal où « which dart » fonctionne, ou lancez :" >&2
+  echo "  ./scripts/setup-git-hooks.sh   # une fois + vérifiez que dart est dans le PATH" >&2
+  exit 1
+fi
+
+"$DART" format lib test
+
+# Ne re-stager que les chemins déjà dans l’index (y compris les nouveaux fichiers staged).
+STAGED=$(git diff --cached --name-only --diff-filter=ACM -- lib test || true)
+if [ -n "$STAGED" ]; then
+  # shellcheck disable=SC2086
+  git add -- $STAGED
+fi

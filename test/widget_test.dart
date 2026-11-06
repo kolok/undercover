@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:undercover/l10n/locale_controller.dart';
@@ -8,6 +9,33 @@ UndercoverApp frenchApp() =>
     UndercoverApp(locales: LocaleController(initialLocale: const Locale('fr')));
 
 void main() {
+  const rateLabel = 'Noter sur le Play Store';
+
+  Future<void> openAbout(WidgetTester tester) async {
+    await tester.pumpWidget(frenchApp());
+    await tester.tap(find.text('À propos'));
+    await tester.pumpAndSettle();
+    expect(find.text('À PROPOS'), findsOneWidget);
+  }
+
+  testWidgets('la page À propos invite à noter le jeu sur Android', (
+    tester,
+  ) async {
+    await tester.pumpWidget(frenchApp());
+    expect(find.text(rateLabel), findsNothing);
+
+    await openAbout(tester);
+    expect(find.textContaining('sans publicité'), findsOneWidget);
+    expect(find.text(rateLabel), findsOneWidget);
+  });
+
+  testWidgets('pas d\'invitation Play Store sur iOS', (tester) async {
+    debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+    await openAbout(tester);
+    expect(find.text(rateLabel), findsNothing);
+    debugDefaultTargetPlatformOverride = null;
+  });
+
   testWidgets('on peut aller de l\'accueil à la distribution des cartes', (
     tester,
   ) async {

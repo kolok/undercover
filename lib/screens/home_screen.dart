@@ -4,6 +4,7 @@ import '../l10n/l10n.dart';
 import '../l10n/locale_controller.dart';
 import '../theme.dart';
 import '../widgets/theater_mask_logo.dart';
+import 'about_screen.dart';
 import 'setup_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -60,6 +61,15 @@ class HomeScreen extends StatelessWidget {
                   onPressed: () => _showRules(context),
                   child: Text(
                     l10n.homeRules,
+                    style: const TextStyle(color: AppColors.muted),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const AboutScreen()),
+                  ),
+                  child: Text(
+                    l10n.homeAbout,
                     style: const TextStyle(color: AppColors.muted),
                   ),
                 ),
