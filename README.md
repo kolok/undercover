@@ -51,6 +51,19 @@ flutter analyze
 flutter gen-l10n  # régénère lib/l10n/generated/ après modification d'un .arb
 ```
 
+### Hook Git (format avant commit)
+
+Le dépôt fournit un hook shell (sans Python) qui exécute `dart format lib test`
+puis met en zone les fichiers modifiés sous `lib/` et `test/`, comme en CI.
+
+Après un clone, activez-le une fois :
+
+```bash
+git config core.hooksPath .githooks
+```
+
+(require : `dart` dans le `PATH`, fourni avec Flutter.)
+
 ## Ajouter ou modifier une langue
 
 Les textes de l'interface et les listes de mots vivent dans deux endroits

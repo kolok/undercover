@@ -108,6 +108,8 @@ flutter gen-l10n   # après modification des .arb
 
 CI (`.github/workflows/ci.yml`) exécute : `flutter analyze`, `dart format --set-exit-if-changed`, `flutter test`.
 
+**Hook Git (optionnel)** : `.githooks/pre-commit` lance `dart format lib test` (shell, pas de Python). Activez-le avec `git config core.hooksPath .githooks` à la racine du dépôt ; `dart` doit être dans le `PATH`.
+
 ## Tests — exigences
 
 ### Couverture minimale : **80 %**
