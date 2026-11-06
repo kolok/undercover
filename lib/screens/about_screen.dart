@@ -30,7 +30,11 @@ class _AboutScreenState extends State<AboutScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    const textStyle = TextStyle(color: AppColors.muted, height: 1.5, fontSize: 20);
+    const textStyle = TextStyle(
+      color: AppColors.muted,
+      height: 1.5,
+      fontSize: 20,
+    );
     return Scaffold(
       appBar: AppBar(title: Text(l10n.aboutTitle)),
       body: AppBackground(

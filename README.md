@@ -56,13 +56,17 @@ flutter gen-l10n  # régénère lib/l10n/generated/ après modification d'un .ar
 Le dépôt fournit un hook shell (sans Python) qui exécute `dart format lib test`
 puis met en zone les fichiers modifiés sous `lib/` et `test/`, comme en CI.
 
-Après un clone, activez-le une fois :
+**Sans activation, Git n’utilise pas ce dossier** : par défaut il cherche
+`.git/hooks/`. Après un clone, activez les hooks versionnés **une fois** :
 
 ```bash
-git config core.hooksPath .githooks
+./scripts/setup-git-hooks.sh
+# équivalent : git config core.hooksPath .githooks
 ```
 
-(require : `dart` dans le `PATH`, fourni avec Flutter.)
+(require : `dart` accessible depuis le terminal où vous committez — en pratique
+Flutter / le SDK Dart ; le hook ajoute `/opt/homebrew/bin` et cherche aussi le
+`dart` du cache Flutter si la commande `flutter` est dans le PATH.)
 
 ## Ajouter ou modifier une langue
 
