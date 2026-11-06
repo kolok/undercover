@@ -27,7 +27,6 @@ class _AboutScreenState extends State<AboutScreen> {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
